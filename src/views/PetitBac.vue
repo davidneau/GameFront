@@ -291,6 +291,7 @@ export default {
         this.categories.forEach(el => {
             console.log(el)
             document.getElementById(el).value = data.letter
+            document.getElementById(el).disabled = false
         })
         document.getElementById("divGame").style.display = "block"
         document.getElementById(data.letter).style.color = "green"
