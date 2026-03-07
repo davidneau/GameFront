@@ -1,26 +1,31 @@
 <template>
-  <nav>
-    <router-link to="/">Accueil</router-link> |
-    <router-link to="/petitBac">À propos</router-link>
-  </nav>
-
-  <router-view />
+  <Banner :playerName="playerName"></Banner>
+  <router-view id="routerView"/>
 </template>
 
 <script>
+import Banner from './components/Banner.vue';
 
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    Banner
+  },
+  data() {
+    return {
+        playerName: ""
+    }
+  },
+  mounted() {
+    console.log(localStorage.getItem('playerName'))
+    this.playerName = localStorage.getItem('playerName')
+  }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+
+#routerView{
+    height: calc(100vh - 60px);
 }
 </style>
