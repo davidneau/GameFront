@@ -64,28 +64,38 @@
                 <div>
                     <h3>Prénom Féminin</h3>
                     <form @submit.prevent="checkAnswer">
-                        <input type="text" id="prenomsM" />
+                        <input type="text" id="prenomsF" />
                     </form>
                 </div>
                 <div>
                     <h3>Prénom Masculin</h3>
-                    <input type="text" id="prenomsM" @keyup.enter="checkAnswer">
+                    <form @submit.prevent="checkAnswer">
+                        <input type="text" id="prenomsM" />
+                    </form>
                 </div>
                 <div>
                     <h3>Métier</h3>
-                    <input type="text" id="metiers" @keyup.enter="checkAnswer">
+                    <form @submit.prevent="checkAnswer">
+                        <input type="text" id="metiers" />
+                    </form>
                 </div>
                 <div>
                     <h3>Fruit/Légume</h3>
-                    <input type="text" id="legumesfruits" @keyup.enter="checkAnswer">
+                    <form @submit.prevent="checkAnswer">
+                        <input type="text" id="legumesfruits" />
+                    </form>
                 </div>
                 <div>
                     <h3>Pays/Ville</h3>
-                    <input type="text" id="paysvilles" @keyup.enter="checkAnswer">
+                    <form @submit.prevent="checkAnswer">
+                        <input type="text" id="paysvilles" />
+                    </form>
                 </div>
                 <div>
                     <h3>Célibrité</h3>
-                    <input type="text" id="celebrities" @keyup.enter="checkAnswer">
+                    <form @submit.prevent="checkAnswer">
+                        <input type="text" id="celebrities" />
+                    </form>
                 </div>
                 <div class="flexCol">
                     <h3>Score</h3>
@@ -167,9 +177,9 @@ export default {
         console.log(event.key, event.code, event.keyCode)
     },
     checkAnswer(event){
-        console.log('check')
-        let value = event.target.value
-        let cat = event.target.id
+        console.log(event.target.firstChild.value)
+        let value = event.target.firstChild.value
+        let cat = event.target.firstChild.id
         this.socket.emit("check_on", { valeur:value, categorie: cat, room: this.roomId })
     },
     async sendMessage(event){
