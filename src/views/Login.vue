@@ -37,7 +37,7 @@ export default ({
             .then(profile => {
                 this.$emit('switchUserConnected')
                 console.log(profile.data); // Affiche les infos de l'utilisateur
-                this.$router.push('home')
+                this.$router.push('/')
             })
             .catch(err => {
                 console.error('Erreur:', err.response);
