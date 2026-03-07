@@ -67,23 +67,23 @@
                 </div>
                 <div>
                     <h3>Prénom Masculin</h3>
-                    <input type="text" id="prenomsM" @keyup.enter="checkAnswer" @keyup.NumpadEnter="checkAnswer">
+                    <input type="text" id="prenomsM" @keyup.enter="checkAnswer">
                 </div>
                 <div>
                     <h3>Métier</h3>
-                    <input type="text" id="metiers" @keyup.enter="checkAnswer" @keyup.NumpadEnter="checkAnswer">
+                    <input type="text" id="metiers" @keyup.enter="checkAnswer">
                 </div>
                 <div>
                     <h3>Fruit/Légume</h3>
-                    <input type="text" id="legumesfruits" @keyup.enter="checkAnswer" @keyup.NumpadEnter="checkAnswer">
+                    <input type="text" id="legumesfruits" @keyup.enter="checkAnswer">
                 </div>
                 <div>
                     <h3>Pays/Ville</h3>
-                    <input type="text" id="paysvilles" @keyup.enter="checkAnswer" @keyup.NumpadEnter="checkAnswer">
+                    <input type="text" id="paysvilles" @keyup.enter="checkAnswer">
                 </div>
                 <div>
                     <h3>Célibrité</h3>
-                    <input type="text" id="celebrities" @keyup.enter="checkAnswer" @keyup.NumpadEnter="checkAnswer">
+                    <input type="text" id="celebrities" @keyup.enter="checkAnswer">
                 </div>
                 <div class="flexCol">
                     <h3>Score</h3>
