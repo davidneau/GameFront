@@ -5,7 +5,7 @@ const API = axios.create({
 });
 
 
-export function login(identifiant, password) {
+export async function login(identifiant, password) {
     console.log(process.env.VUE_APP_API_URL)
     return API.post('/login', { 'identifiant': identifiant, 'password': password })
         .then(res => {
