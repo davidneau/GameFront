@@ -63,7 +63,7 @@
                 </div>
                 <div>
                     <h3>Prénom Féminin</h3>
-                    <input value="MARINE" type="text" id="prenomsF" @keyup.enter="checkAnswer" @keyup.NumpadEnter="checkAnswer">
+                    <input value="MARINE" type="text" id="prenomsF" @keyup.enter="checkAnswer" @keyup="checkKey">
                 </div>
                 <div>
                     <h3>Prénom Masculin</h3>
@@ -160,6 +160,9 @@ export default {
                 left: window.innerWidth
             });
         }
+    },
+    checkKey(event) {
+        console.log(event.key, event.code, event.keyCode)
     },
     checkAnswer(event){
         console.log('check')
