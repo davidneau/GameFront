@@ -254,7 +254,7 @@ export default {
         if (data.res == false) target.style.backgroundColor = "red"
         else {
             target.style.backgroundColor = "green"
-            this.nbGoodAnswer += 6
+            this.nbGoodAnswer += 1
             console.log(this.nbGoodAnswer)
             if (this.nbGoodAnswer == 6) {
                 console.log("stop")
@@ -277,7 +277,7 @@ export default {
     })
 
     this.socket.on("end_round", (data) => {
-        this.panel ="lobby"
+        this.panel ="score"
         console.log("receive")
         console.log(data.ans)
         this.answers = data.ans
