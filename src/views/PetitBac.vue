@@ -63,27 +63,27 @@
                 </div>
                 <div>
                     <h3>Prénom Féminin</h3>
-                    <input value="MARINE" type="text" id="prenomsF" @keyup.enter="checkAnswer">
+                    <input value="MARINE" type="text" id="prenomsF" @keyup.enter="checkAnswer" @keyup.NumpadEnter="checkAnswer">
                 </div>
                 <div>
                     <h3>Prénom Masculin</h3>
-                    <input type="text" id="prenomsM" @keyup.enter="checkAnswer">
+                    <input type="text" id="prenomsM" @keyup.enter="checkAnswer" @keyup.NumpadEnter="checkAnswer">
                 </div>
                 <div>
                     <h3>Métier</h3>
-                    <input type="text" id="metiers" @keyup.enter="checkAnswer">
+                    <input type="text" id="metiers" @keyup.enter="checkAnswer" @keyup.NumpadEnter="checkAnswer">
                 </div>
                 <div>
                     <h3>Fruit/Légume</h3>
-                    <input type="text" id="legumesfruits" @keyup.enter="checkAnswer">
+                    <input type="text" id="legumesfruits" @keyup.enter="checkAnswer" @keyup.NumpadEnter="checkAnswer">
                 </div>
                 <div>
                     <h3>Pays/Ville</h3>
-                    <input type="text" id="paysvilles" @keyup.enter="checkAnswer">
+                    <input type="text" id="paysvilles" @keyup.enter="checkAnswer" @keyup.NumpadEnter="checkAnswer">
                 </div>
                 <div>
                     <h3>Célibrité</h3>
-                    <input type="text" id="celebrities" @keyup.enter="checkAnswer">
+                    <input type="text" id="celebrities" @keyup.enter="checkAnswer" @keyup.NumpadEnter="checkAnswer">
                 </div>
                 <div class="flexCol">
                     <h3>Score</h3>
@@ -209,31 +209,7 @@ export default {
     }
   },
   mounted() {
-    /* const router = useRoute()
-    this.roomId = router.params.roomId
-    console.log(this.roomId) */
     this.socket = socket.connect()
-    // Rejoindre une room
-
-    //this.socket.emit("create_game")
-
-    /* if (!this.roomId){
-        console.log("create")
-        this.socket.on("game_created", (data) => {
-            console.log(data)
-            this.roomId = data.room
-            routerObj.push(`/petitBac/${data.room}`)
-            
-            this.socket.emit("join_game", {
-                room: this.roomId
-            })
-        })
-    } else {
-        console.log("join")
-        this.socket.emit("join_game", {
-            room: this.roomId
-        })
-    } */
     
     this.socket.on("players_update", (data) => {
         console.log("player update")
