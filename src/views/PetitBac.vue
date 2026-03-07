@@ -63,7 +63,9 @@
                 </div>
                 <div>
                     <h3>Prénom Féminin</h3>
-                    <input value="MARINE" type="text" id="prenomsF" @keyup.enter="checkAnswer" @keyup="checkKey">
+                    <form @submit.prevent="checkAnswer">
+                        <input type="text" id="prenomsM" />
+                    </form>
                 </div>
                 <div>
                     <h3>Prénom Masculin</h3>
