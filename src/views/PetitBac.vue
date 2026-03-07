@@ -180,7 +180,8 @@ export default {
         console.log(event.target.firstChild.value)
         let value = event.target.firstChild.value
         let cat = event.target.firstChild.id
-        this.socket.emit("check_on", { valeur:value, categorie: cat, room: this.roomId })
+        if (value.charAt(0) === this.letter) this.socket.emit("check_on", { valeur:value, categorie: cat, room: this.roomId })
+        else alert("ce mot ne commence pas par la lettre demandée")
     },
     async sendMessage(event){
         let messages = document.getElementById("messages")
@@ -241,10 +242,11 @@ export default {
     this.socket.on("check_receive", data => {
         console.log(data)
         let catId = data.categorie
-        let target = document.getElementById(catId).parentNode
+        let target = document.getElementById(catId).parentNode.parentNode
         if (data.res == false) target.style.backgroundColor = "red"
         else {
             target.style.backgroundColor = "green"
+            document.getElementById(catId).disabled = true
             this.nbGoodAnswer += 1
             console.log(this.nbGoodAnswer)
             if (this.nbGoodAnswer == 6) {
@@ -288,7 +290,7 @@ export default {
         document.getElementById("letter").innerHTML = data.letter
         this.categories.forEach(el => {
             console.log(el)
-            //document.getElementById(el).value = data.letter
+            document.getElementById(el).value = data.letter
         })
         document.getElementById("divGame").style.display = "block"
         document.getElementById(data.letter).style.color = "green"
