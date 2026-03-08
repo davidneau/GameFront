@@ -148,7 +148,7 @@ export default {
         letter: "",
         dialog: false,
         score: 0,
-        panel: "score",
+        panel: "accueil",
         answers: [],
         cursorPrecSuiv: 1,
         categories: ["prenomsF", "prenomsM", "metiers", "legumesfruits", "paysvilles", "celebrities"],
