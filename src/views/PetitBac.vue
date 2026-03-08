@@ -1,41 +1,50 @@
 <template>
     <div>
-        <div id="mainPetitBac">
-            <h3 id="divRommId" v-if="roomId">{{ roomId }}</h3>
-            <h1 v-show="this.panel !== 'accueil'">Petit Bac</h1>
-            <div v-show="this.panel !== 'accueil'" id="letters">
-                <span id="A">A</span>
-                <span id="B">B</span>
-                <span id="C">C</span>
-                <span id="D">D</span>
-                <span id="E">E</span>
-                <span id="F">F</span>
-                <span id="G">G</span>
-                <span id="H">H</span>
-                <span id="I">I</span>
-                <span id="J">J</span>
-                <span id="K">K</span>
-                <span id="L">L</span>
-                <span id="M">M</span>
-                <span id="N">N</span>
-                <span id="O">O</span>
-                <span id="P">P</span>
-                <span id="Q">Q</span>
-                <span id="R">R</span>
-                <span id="S">S</span>
-                <span id="T">T</span>
-                <span id="U">U</span>
-                <span id="V">V</span>
-                <span id="W">W</span>
-                <span id="X">X</span>
-                <span id="Y">Y</span>
-                <span id="Z">Z</span>
+        <div id="header">
+            <div id="headerTitle">
+                <button class="back-button" @click="this.$router.push('/')">⮜</button>
+                <h1 style="color: white;">Petit Bac</h1>
+                <h3 id="divRoomId">{{ roomId }}</h3>
             </div>
+            <div style="visibility: hidden;" id="letters">
+                <div>
+                    <span id="A">A</span>
+                    <span id="B">B</span>
+                    <span id="C">C</span>
+                    <span id="D">D</span>
+                    <span id="E">E</span>
+                    <span id="F">F</span>
+                    <span id="G">G</span>
+                    <span id="H">H</span>
+                    <span id="I">I</span>
+                    <span id="J">J</span>
+                    <span id="K">K</span>
+                    <span id="L">L</span>
+                    <span id="M">M</span>
+                </div>
+                <div>
+                    <span id="N">N</span>
+                    <span id="O">O</span>
+                    <span id="P">P</span>
+                    <span id="Q">Q</span>
+                    <span id="R">R</span>
+                    <span id="S">S</span>
+                    <span id="T">T</span>
+                    <span id="U">U</span>
+                    <span id="V">V</span>
+                    <span id="W">W</span>
+                    <span id="X">X</span>
+                    <span id="Y">Y</span>
+                    <span id="Z">Z</span>
+                </div>
+            </div>
+        </div>
+        <div id="mainPetitBac">
             <div v-show="panel == 'accueil'" id="accueil">
                 <div>
                     <button @click="dialog = true">Rejoindre une partie</button>
                     <div v-if="dialog" id="popup">
-                        <p>Code:</p>
+                        <p style="color: black;">Code:</p>
                         <input type="text" @keyup.enter="joinGame"/>
                     </div>
                     <button @click="hostGame">Créer une partie</button>
@@ -61,37 +70,37 @@
                     <h3>Lettre:</h3>
                     <p id="letter"></p>
                 </div>
-                <div>
+                <div class="divCat">
                     <h3>Prénom Féminin</h3>
                     <form @submit.prevent="checkAnswer">
                         <input type="text" id="prenomsF" />
                     </form>
                 </div>
-                <div>
+                <div class="divCat">
                     <h3>Prénom Masculin</h3>
                     <form @submit.prevent="checkAnswer">
                         <input type="text" id="prenomsM" />
                     </form>
                 </div>
-                <div>
+                <div class="divCat">
                     <h3>Métier</h3>
                     <form @submit.prevent="checkAnswer">
                         <input type="text" id="metiers" />
                     </form>
                 </div>
-                <div>
+                <div class="divCat">
                     <h3>Fruit/Légume</h3>
                     <form @submit.prevent="checkAnswer">
                         <input type="text" id="legumesfruits" />
                     </form>
                 </div>
-                <div>
+                <div class="divCat">
                     <h3>Pays/Ville</h3>
                     <form @submit.prevent="checkAnswer">
                         <input type="text" id="paysvilles" />
                     </form>
                 </div>
-                <div>
+                <div class="divCat">
                     <h3>Célibrité</h3>
                     <form @submit.prevent="checkAnswer">
                         <input type="text" id="celebrities" />
@@ -106,7 +115,7 @@
                 <div id="slider">
                     <div id="divRes">
                         <div v-for="i in 6" :key="i" style="width: 16.666666%;">
-                            <h1>{{ categories[i-1] }}</h1>
+                            <h1>{{ categoriesMieuxEcrit[i-1] }}</h1>
                             <div class="ansDiv">
                                 <div v-for="(player, key) in answers" :key="key">
                                     <playerCard :name="player.name" :ready="Object.values(player.ans)[i-1].at(1)" :ans="Object.values(player.ans)[i-1].at(0)"></playerCard>
@@ -134,15 +143,16 @@ export default {
     return {
         socket: "",
         nbGoodAnswer: 0,
-        roomId: 0,
+        roomId: "------",
         listPlayer: [],
         letter: "",
         dialog: false,
         score: 0,
-        panel: "accueil",
+        panel: "score",
         answers: [],
         cursorPrecSuiv: 1,
-        categories: ["prenomsF", "prenomsM", "metiers", "legumesfruits", "paysvilles", "celebrities"]
+        categories: ["prenomsF", "prenomsM", "metiers", "legumesfruits", "paysvilles", "celebrities"],
+        categoriesMieuxEcrit: ["prenoms Féminin", "prenoms Masculin", "métiers", "légumes / fruits", "pays / villes", "célébritées"]
     }
   },
   components: {playerCard},
@@ -222,6 +232,7 @@ export default {
         })
 
         this.panel = "lobby"
+        document.getElementById("letters").style.visibility = "visible"
     }
   },
   mounted() {
@@ -233,6 +244,7 @@ export default {
         this.listPlayer = []
         this.listPlayer = data
         if (this.panel == 'accueil') this.panel = 'lobby'
+        document.getElementById("letters").style.visibility = "visible"
     })
 
     this.socket.on("game_stopped", () => {
@@ -310,10 +322,73 @@ body, html{
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+    height: 85%;
+    width: 100%;
+    color: white;
+}
+
+.back-button {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  font-size: 30px;
+
+}
+
+#accueil{
+    height: 60%;
+    width: 100%;
+}
+
+.divCat{
+    background-color: antiquewhite;
+    margin: 2px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 80px;
+    color: black;
+    width: 70%;
+    border-radius: 10px;
+}
+
+.divCat>h3{
+    margin: 0;
+}
+
+#accueil>div{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+#accueil>div>button{
+    width: 60%;
+    border-radius: 10px;
+    background-color: bisque;
+    padding: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#divRoomId{
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px;
+    color: black;
 }
 
 #letters{
-    color: red
+    color: red;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
 }
 
 #letters span{
@@ -321,10 +396,27 @@ body, html{
     font-weight: bold;
 }
 
+#letters>div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 80%;
+}
+
 #divRes{
     display: flex;
     flex-direction: row;
     width: 600vw;
+}
+
+#header{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    color: white;
 }
 
 .ansDiv{
@@ -347,10 +439,7 @@ body, html{
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-}
-
-#divGame {
-    background-color: grey;
+    width: 100%;
 }
 
 #prec_suiv{
@@ -361,14 +450,12 @@ body, html{
     align-items: center;
 }
 
-#divRommId{
-    position: absolute;
-    top: 70px;
-    left: 10px;
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color: white
-    ;
+#headerTitle{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
 }
 
 #lobby {
@@ -407,5 +494,9 @@ body, html{
     border-radius: 10px;
     padding: 20px;
     background-color: aquamarine;
+}
+
+p{
+    margin: 0;
 }
 </style>
