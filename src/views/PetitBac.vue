@@ -325,6 +325,8 @@ body, html{
     height: 85%;
     width: 100%;
     color: white;
+    max-height: 85%;
+    overflow: auto;
 }
 
 .back-button {
