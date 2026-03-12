@@ -114,7 +114,7 @@
             <div v-show="panel == 'score'" id="divScore">
                 <div id="slider">
                     <div id="divRes">
-                        <div v-for="i in 6" :key="i" style="width: 16.666666%;">
+                        <div v-for="i in 6" :key="i" style="width: 16.6667%; text-align: center;">
                             <h1>{{ categoriesMieuxEcrit[i-1] }}</h1>
                             <div class="ansDiv">
                                 <div v-for="(player, key) in answers" :key="key">
@@ -190,8 +190,9 @@ export default {
         console.log(event.target.firstChild.value)
         let value = event.target.firstChild.value
         let cat = event.target.firstChild.id
-        if (value.charAt(0) === this.letter) this.socket.emit("check_on", { valeur:value, categorie: cat, room: this.roomId })
-        else alert("ce mot ne commence pas par la lettre demandée")
+        this.socket.emit("check_on", { valeur:value, categorie: cat, room: this.roomId })
+        /* if (value.charAt(0) === this.letter) this.socket.emit("check_on", { valeur:value, categorie: cat, room: this.roomId })
+        else alert("ce mot ne commence pas par la lettre demandée") */
     },
     async sendMessage(event){
         let messages = document.getElementById("messages")
@@ -259,7 +260,7 @@ export default {
         else {
             target.style.backgroundColor = "green"
             document.getElementById(catId).disabled = true
-            this.nbGoodAnswer += 1
+            this.nbGoodAnswer += 6
             console.log(this.nbGoodAnswer)
             if (this.nbGoodAnswer == 6) {
                 console.log("stop")
@@ -304,6 +305,7 @@ export default {
             console.log(el)
             document.getElementById(el).value = data.letter
             document.getElementById(el).disabled = false
+            document.getElementById(el).parentNode.parentNode.style.backgroundColor = "antiquewhite"
         })
         document.getElementById("divGame").style.display = "block"
         document.getElementById(data.letter).style.color = "green"

@@ -29,6 +29,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+h3{
+    margin: 0;
+}
+
 .good {
     background-color: lightgreen;
 }
@@ -46,5 +51,6 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+    height: 60px;
 }
 </style>
