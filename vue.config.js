@@ -1,9 +1,8 @@
 const { defineConfig } = require('@vue/cli-service')
-module.exports = defineConfig({
-  transpileDependencies: true
-})
 
-module.exports = {
+module.exports = defineConfig({
+  transpileDependencies: true,
+
   pwa: {
     name: 'Mon App Vue',
     themeColor: '#42b883',
@@ -16,4 +15,4 @@ module.exports = {
       clientsClaim: true
     }
   }
-}
+})
