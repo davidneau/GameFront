@@ -6,12 +6,8 @@ createApp(App).use(router).mount('#app')
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('../public/service-worker.js')
-      .then((registration) => {
-        console.log('Service Worker enregistré :', registration)
-      })
-      .catch((error) => {
-        console.error('Erreur Service Worker :', error)
-      })
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('Service Worker enregistré :', reg))
+      .catch(err => console.error('Erreur Service Worker :', err))
   })
 }
