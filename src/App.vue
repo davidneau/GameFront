@@ -27,5 +27,6 @@ export default {
 
 #routerView{
     height: calc(100vh - 60px);
+    min-height: 100dvh
 }
 </style>

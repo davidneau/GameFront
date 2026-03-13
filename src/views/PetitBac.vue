@@ -130,6 +130,9 @@
                 </div>
             </div>
         </div>
+        <div v-show="panel == 'scoreFinal'" id="divScoreFinal">
+            2
+        </div>
     </div>
 </template>
 
@@ -287,6 +290,7 @@ export default {
         console.log("receive")
         console.log(data.ans)
         this.answers = data.ans
+        
         this.endround()
     })
 
