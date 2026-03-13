@@ -30,36 +30,3 @@ if (process.env.NODE_ENV === 'production') {
     }
   })
 }
-
-// Vérifie si le navigateur supporte les Service Workers
-if ('serviceWorker' in navigator) {
-  // Écoute l'événement `load` pour éviter de ralentir le chargement initial
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/service-worker.js') // Indique où se trouve votre fichier Service Worker
-      .then(registration => {
-        console.log('Service Worker enregistré avec succès :', registration);
-
-        // Gestion des mises à jour
-        registration.onupdatefound = () => {
-          const installingWorker = registration.installing;
-          if (installingWorker) {
-            installingWorker.onstatechange = () => {
-              if (installingWorker.state === 'installed') {
-                if (navigator.serviceWorker.controller) {
-                  // Nouveau contenu disponible, informez l'utilisateur
-                  console.log('Nouveau contenu disponible. Veuillez recharger.');
-                } else {
-                  // Contenu mis en cache pour une utilisation hors ligne
-                  console.log('Contenu mis en cache pour une utilisation hors ligne.');
-                }
-              }
-            };
-          }
-        };
-      })
-      .catch(error => {
-        console.error('Erreur lors de l\'enregistrement du Service Worker :', error);
-      });
-  });
-}
