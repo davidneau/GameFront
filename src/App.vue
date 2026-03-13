@@ -18,7 +18,7 @@ export default {
   },
   mounted() {
     console.log(localStorage.getItem('playerName'))
-    this.playerName = localStorage.getItem('playerName') 
+    this.playerName = localStorage.getItem('playerName')
   }
 }
 </script>
