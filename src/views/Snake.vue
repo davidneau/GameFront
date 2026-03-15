@@ -10,6 +10,9 @@
 
             <canvas id="gameCanvas" width="400" height="400"></canvas>
 
+            <div id="touchpad">
+                <div></div>
+            </div>
             <p id="message">{{ messageEl }}</p>
         </div>
     </div>
@@ -63,6 +66,7 @@ export default {
 
         // Mise à jour de l'état du jeu
         update() {
+            console.log(this.direction)
             // Nouvelle tête = tête actuelle + direction
             const head = {
                 x: this.snake[0].x + this.direction.x,
@@ -177,7 +181,40 @@ export default {
             this.gameOver = true;
             clearInterval(this.gameInterval);
             this.messageEl = "💀 Game Over !";
-        } 
+        },
+        handleTouch(e) {
+            let touchpad = document.getElementById('touchpad')
+            e.preventDefault(); // empêche scroll / zoom par défaut
+            const touches = e.touches;
+
+            for (let i = 0; i < touches.length; i++) {
+                const touch = touches[i];
+                const xC = touch.clientX;
+                const yC = touch.clientY;
+                let xtouchPad = touchpad.getBoundingClientRect().left + touchpad.clientWidth / 2
+                let ytouchPad = touchpad.getBoundingClientRect().top + touchpad.clientHeight / 2
+                let xTP = xC - (xtouchPad + window.scrollX)
+                let yTP = yC - (ytouchPad + window.scrollY)
+                
+                if ((-yTP > xTP) && (-yTP > -xTP)) {
+                    console.log("en haut")
+                    if (this.direction.y !== 1) this.direction = { x: 0, y: -1 };
+                }
+                else if ((-yTP < xTP) && (-yTP < -xTP)) {
+                    if (this.direction.y !== -1) this.direction = { x: 0, y: 1 };
+                    console.log("en bas")
+                }
+                else if ((-yTP > xTP) && (-yTP < -xTP)) {
+                    if (this.direction.x !== 1) this.direction = { x: -1, y: 0 };
+                    console.log("gauche")
+                }
+                else if ((-yTP < xTP) && (-yTP > -xTP)) {
+                    if (this.direction.x !== -1) this.direction = { x: 1, y: 0 };
+                    console.log("droite")
+                }
+                console.log("nd", this.direction)
+            }
+        }
     },
     mounted(){
         // Contrôles clavier
@@ -213,6 +250,13 @@ export default {
         // Bouton restart
         document.getElementById("restartBtn").addEventListener("click", this.initGame);
 
+
+        let touchpad = document.getElementById('touchpad')
+
+        touchpad.addEventListener('touchstart', (e) => this.handleTouch(e), { passive: false });
+        touchpad.addEventListener('touchmove', (e) => this.handleTouch(e), { passive: false });
+        touchpad.addEventListener('touchend', (e) => this.handleTouch(e), { passive: false });
+
         // Lancer le jeu
         this.initGame();
         this.draw();
@@ -223,6 +267,29 @@ export default {
 <style>
 .game-container {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  max-height: 100%;
+  overflow: auto;
+}
+
+#touchpad{
+    background-color: grey;
+    width: 60%;
+    aspect-ratio: 1.0;
+    position: relative;
+}
+
+#touchpad>div {
+    background-color: red;
+    border-radius: 50%;
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
 }
 
 #gameCanvas {
