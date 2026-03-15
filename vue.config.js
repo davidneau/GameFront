@@ -8,7 +8,7 @@ module.exports = {
 
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
-      swSrc: 'src/sw.js'
+      swSrc: './src/sw.js'
     }
   }
 }
