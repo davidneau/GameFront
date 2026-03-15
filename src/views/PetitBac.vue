@@ -269,8 +269,8 @@ export default {
                     })
     }
   },
-  mounted() {
-    this.socket = initSocket();
+  async mounted() {
+    setTimeout(() => this.socket = initSocket(), 2000);
     
     this.socket.on("players_update", (data) => {
         console.log("player update")
