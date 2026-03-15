@@ -267,6 +267,81 @@ export default {
         this.socket.emit("stop_game", {
                         room: this.roomId
                     })
+    },
+    init(){
+        this.socket.on("players_update", (data) => {
+            console.log("player update")
+            console.log(data)
+            this.listPlayer = []
+            this.listPlayer = data
+            if (this.panel == 'accueil') this.panel = 'lobby'
+            document.getElementById("letters").style.visibility = "visible"
+        })
+
+        this.socket.on("game_stopped", () => {
+            alert("stop")
+        })
+
+        this.socket.on("check_receive", data => {
+            console.log(data)
+            let catId = data.categorie
+            let target = document.getElementById(catId).parentNode.parentNode
+            if (data.res == false) target.style.backgroundColor = "red"
+            else {
+                target.style.backgroundColor = "green"
+                document.getElementById(catId).disabled = true
+                this.nbGoodAnswer += 1
+                console.log(this.nbGoodAnswer)
+                if (this.nbGoodAnswer == 6) {
+                    console.log("stop")
+                    this.stop_the_game()
+                }
+            }
+        })
+
+        this.socket.on("receive_message", (data) => {
+            console.log("receive")
+            console.log(data.message)
+            let messages = document.getElementById("messages")
+            let message = document.createElement("p")
+            message.innerText = data.message
+            messages.appendChild(message)
+            this.endround()
+        })
+
+        this.socket.on("end_round", (data) => {
+            this.panel ="score"
+            console.log("receive")
+            console.log(data.ans)
+            this.answers = data.ans
+            this.endround()
+        })
+
+        this.socket.on("end_game", (data) => {
+            console.log("receive scoreFinal")
+            console.log(data.ans)
+            this.scoreFinal = data.score
+        })
+        
+        this.socket.on("error", (data) => {
+            alert(data.message)
+        })
+
+        this.socket.on("round_started", (data) => {
+            this.panel = "game"
+            console.log("go!")
+            console.log(data)
+            this.letter = data.letter
+            document.getElementById("letter").innerHTML = data.letter
+            this.categories.forEach(el => {
+                console.log(el)
+                document.getElementById(el).value = data.letter
+                document.getElementById(el).disabled = false
+                document.getElementById(el).parentNode.parentNode.style.backgroundColor = "antiquewhite"
+            })
+            document.getElementById("divGame").style.display = "block"
+            document.getElementById(data.letter).style.color = "green"
+        })
     }
   },
   async mounted() {
@@ -274,81 +349,8 @@ export default {
 
     setTimeout(() => {
       this.socket = initSocket({});
+      this.init()
     }, 200);
-    
-    this.socket.on("players_update", (data) => {
-        console.log("player update")
-        console.log(data)
-        this.listPlayer = []
-        this.listPlayer = data
-        if (this.panel == 'accueil') this.panel = 'lobby'
-        document.getElementById("letters").style.visibility = "visible"
-    })
-
-    this.socket.on("game_stopped", () => {
-        alert("stop")
-    })
-
-    this.socket.on("check_receive", data => {
-        console.log(data)
-        let catId = data.categorie
-        let target = document.getElementById(catId).parentNode.parentNode
-        if (data.res == false) target.style.backgroundColor = "red"
-        else {
-            target.style.backgroundColor = "green"
-            document.getElementById(catId).disabled = true
-            this.nbGoodAnswer += 1
-            console.log(this.nbGoodAnswer)
-            if (this.nbGoodAnswer == 6) {
-                console.log("stop")
-                this.stop_the_game()
-            }
-        }
-    })
-
-    this.socket.on("receive_message", (data) => {
-        console.log("receive")
-        console.log(data.message)
-        let messages = document.getElementById("messages")
-        let message = document.createElement("p")
-        message.innerText = data.message
-        messages.appendChild(message)
-        this.endround()
-    })
-
-    this.socket.on("end_round", (data) => {
-        this.panel ="score"
-        console.log("receive")
-        console.log(data.ans)
-        this.answers = data.ans
-        this.endround()
-    })
-
-    this.socket.on("end_game", (data) => {
-        console.log("receive scoreFinal")
-        console.log(data.ans)
-        this.scoreFinal = data.score
-    })
-    
-    this.socket.on("error", (data) => {
-        alert(data.message)
-    })
-
-    this.socket.on("round_started", (data) => {
-        this.panel = "game"
-        console.log("go!")
-        console.log(data)
-        this.letter = data.letter
-        document.getElementById("letter").innerHTML = data.letter
-        this.categories.forEach(el => {
-            console.log(el)
-            document.getElementById(el).value = data.letter
-            document.getElementById(el).disabled = false
-            document.getElementById(el).parentNode.parentNode.style.backgroundColor = "antiquewhite"
-        })
-        document.getElementById("divGame").style.display = "block"
-        document.getElementById(data.letter).style.color = "green"
-    })
   }
 }
 </script>
