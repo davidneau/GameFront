@@ -5,7 +5,7 @@ let socket = null;
 export function initSocket() {
   if (!socket) {
     socket = io(process.env.VUE_APP_API_URL, {
-      transports: ["polling", "websocket"],
+      transports: ["websocket"],
       reconnection: true,
       reconnectionAttempts: Infinity,
       reconnectionDelay: 1000,
