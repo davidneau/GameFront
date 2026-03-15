@@ -250,7 +250,7 @@ canvas {
   border-bottom: 3px solid #fff;
   background: #222;
   display: block;
-  margin: 0 auto;
+  margin: 0 auto; 
 }
 
 button {
