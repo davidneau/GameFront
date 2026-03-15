@@ -7,40 +7,38 @@ let refreshing = false
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {
     ready() {
-      console.log('App is being served from cache by a service worker.')
+      console.log('SW ready')
     },
 
     registered() {
-      console.log('Service worker has been registered.')
+      console.log('SW registered')
     },
 
     cached() {
-      console.log('Content has been cached for offline use.')
+      console.log('Content cached for offline use')
     },
 
     updatefound() {
-      console.log('New content is downloading.')
+      console.log('New content downloading')
     },
 
     updated(registration) {
-      console.log('New content is available.')
+      console.log('New content available')
 
       if (registration && registration.waiting) {
-        // Demande au SW en attente de s'activer tout de suite
         registration.waiting.postMessage({ type: 'SKIP_WAITING' })
       }
     },
 
     offline() {
-      console.log('No internet connection found. App is running in offline mode.')
+      console.log('Offline mode')
     },
 
     error(error) {
-      console.error('Error during service worker registration:', error)
+      console.error('SW registration error:', error)
     }
   })
 
-  // Quand le nouveau SW prend le contrôle, on recharge UNE SEULE FOIS
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (refreshing) return
     refreshing = true
