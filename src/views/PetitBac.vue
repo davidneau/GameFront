@@ -152,7 +152,7 @@
 </template>
 
 <script>
-import { socket } from "@/socket"
+import { initSocket } from "@/socket"
 import playerCard from '@/components/playerCard.vue';
 
 export default {
@@ -270,7 +270,7 @@ export default {
     }
   },
   mounted() {
-    this.socket = socket.connect()
+    this.socket = initSocket();
     
     this.socket.on("players_update", (data) => {
         console.log("player update")
