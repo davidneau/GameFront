@@ -16,7 +16,7 @@ export function initSocket() {
     });
 
     socket.on("connect_error", (err) => {
-      console.error("❌ connect_error:", err.message);
+      console.error("❌ connect_error:", err);
     });
 
     socket.on("disconnect", (reason) => {
