@@ -9,6 +9,7 @@ import GameOverview from '../views/games/GameOverview.vue'
 import GameRules from '../views/games/GameRules.vue'
 import GameComments from '../views/games/GameComments.vue'
 import GameLeaderboard from '../views/games/GameLeaderBoard.vue'
+import Snake from '@/views/Snake.vue'
 
 const routes = [
     { 
@@ -51,6 +52,11 @@ const routes = [
         path: '/jeux/petitBac/play',
         name: 'petitBacRedirect',
         component: PetitBac
+    },
+    {
+        path: '/jeux/snake/play',
+        name: 'snakeRedirect',
+        component: Snake
     },
     { 
         path: '/signin', 

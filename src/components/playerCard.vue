@@ -42,6 +42,10 @@ h3{
     background-color: red;
 }
 
+.draw {
+    background-color: orange;
+}
+
 .playerClass {
     border: 2px solid black;
     border-radius: 15px;

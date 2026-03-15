@@ -66,6 +66,7 @@
                 </div>
             </div>
             <div v-show="panel == 'game'" id="divGame">
+                <button @click="stop_the_game">stop</button>
                 <div class="flexCol">
                     <h3>Lettre:</h3>
                     <p id="letter"></p>
@@ -117,21 +118,35 @@
                         <div v-for="i in 6" :key="i" style="width: 16.6667%; text-align: center;">
                             <h1>{{ categoriesMieuxEcrit[i-1] }}</h1>
                             <div class="ansDiv">
-                                <div v-for="(player, key) in answers" :key="key">
-                                    <playerCard :name="player.name" :ready="Object.values(player.ans)[i-1].at(1)" :ans="Object.values(player.ans)[i-1].at(0)"></playerCard>
+                                <div v-for="(playerObj, key) in answers[i-1]" :key="key">
+                                    <playerCard
+                                        :name="key"
+                                        :ans="Object.values(playerObj)[0]"
+                                        :ready="Object.values(playerObj)[1]"
+                                    />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="prec_suiv">
+                <div class="prec_suiv">
                     <button :style="{ visibility: cursorPrecSuiv>1 ? 'visible' : 'hidden' }" @click="prec">Précédent</button>
                     <button @click="suiv">Suivant</button>
                 </div>
             </div>
-        </div>
-        <div v-show="panel == 'scoreFinal'" id="divScoreFinal">
-            2
+            <div v-show="panel == 'scoreFinal'" id="divScoreFinal">
+                <div v-for="(playerObj, key) in scoreFinal" :key="key">
+                    <playerCard
+                        :name="Object.keys(playerObj)[0]"
+                        :ans="Object.values(playerObj)[0][0]"
+                        :ready="Object.values(playerObj)[0][1]"
+                    />
+                </div>
+                <div class="prec_suiv">
+                    <button style="visibility: hidden;"></button>
+                    <button @click="panel='accueil'">Suivant</button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -147,6 +162,7 @@ export default {
         socket: "",
         nbGoodAnswer: 0,
         roomId: "------",
+        round: 1,
         listPlayer: [],
         letter: "",
         dialog: false,
@@ -154,6 +170,7 @@ export default {
         panel: "accueil",
         answers: [],
         cursorPrecSuiv: 1,
+        scoreFinal: [],
         categories: ["prenomsF", "prenomsM", "metiers", "legumesfruits", "paysvilles", "celebrities"],
         categoriesMieuxEcrit: ["prenoms Féminin", "prenoms Masculin", "métiers", "légumes / fruits", "pays / villes", "célébritées"]
     }
@@ -179,6 +196,13 @@ export default {
             slider.scrollTo({
                 left: 0
             });
+            console.log("round", this.round == 2)
+            if (this.round == 2){
+                this.socket.emit("scoreFinal", {
+                    room: this.roomId
+                })
+                this.panel = "scoreFinal"
+            }
         }
         else {
             slider.scrollBy({
@@ -210,18 +234,19 @@ export default {
         )
     },
     endround(){
-        this.score += this.nbGoodAnswer
         this.nbGoodAnswer = 0
         this.categories.forEach(el =>{
             document.getElementById(el).parentNode.style.backgroundColor = "grey"
         })
         this.cursorPrecSuiv = 1
+        this.round += 1
     },
     joinGame(event){
         this.roomId = event.target.value
         this.socket.emit("join_game", {
             room: this.roomId
         })
+        this.dialog = false
     },
     hostGame(){
         this.socket.emit("create_game")
@@ -237,6 +262,11 @@ export default {
 
         this.panel = "lobby"
         document.getElementById("letters").style.visibility = "visible"
+    },
+    stop_the_game(){
+        this.socket.emit("stop_game", {
+                        room: this.roomId
+                    })
     }
   },
   mounted() {
@@ -263,14 +293,11 @@ export default {
         else {
             target.style.backgroundColor = "green"
             document.getElementById(catId).disabled = true
-            this.nbGoodAnswer += 6
+            this.nbGoodAnswer += 1
             console.log(this.nbGoodAnswer)
             if (this.nbGoodAnswer == 6) {
                 console.log("stop")
-                this.socket.emit("stop_game", {
-                        room: this.roomId
-                    }
-                )
+                this.stop_the_game()
             }
         }
     })
@@ -290,10 +317,14 @@ export default {
         console.log("receive")
         console.log(data.ans)
         this.answers = data.ans
-        
         this.endround()
     })
 
+    this.socket.on("end_game", (data) => {
+        console.log("receive scoreFinal")
+        console.log(data.ans)
+        this.scoreFinal = data.score
+    })
     
     this.socket.on("error", (data) => {
         alert(data.message)
@@ -450,7 +481,7 @@ body, html{
     width: 100%;
 }
 
-#prec_suiv{
+.prec_suiv{
     width: 100vw;
     display: flex;
     flex-direction: row;
@@ -488,6 +519,11 @@ body, html{
   overflow-x: auto;
   scrollbar-width: none; /* Firefox */
 }
+
+#divScoreFinal {
+    width: 80%;
+}
+
 
 #divScore::-webkit-scrollbar {
   display: none; /* Chrome */

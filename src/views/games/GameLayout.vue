@@ -6,7 +6,9 @@
         <h1>{{ game }}</h1>
         <p>Arcade • Solo • 2 min</p>
       </div>
-      <button class="play-btn" @click="play">Jouer</button>
+      <button class="play-btn">
+        <RouterLink :to="`/jeux/${game}/play`">Jouer</RouterLink>
+      </button>
     </header>
 
     <main class="tab-content">
