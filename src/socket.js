@@ -15,16 +15,6 @@ export function initSocket() {
         }
     });
 
-    io.on("connection", (socket) => {
-        console.log("✅ Client connecté:", socket.id);
-    });
-
-    io.use((socket, next) => {
-        console.log("Handshake WS:", socket.handshake);
-        // tu peux autoriser ici
-        next();
-    });
-
     socket.on("connect", () => {
       console.log("✅ Socket connected:", socket.id);
     });
