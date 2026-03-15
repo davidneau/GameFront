@@ -1,19 +1,14 @@
-const { defineConfig } = require('@vue/cli-service')
-
-module.exports = defineConfig({
-  transpileDependencies: true,
-  publicPath: '/', 
-
+module.exports = {
   pwa: {
-    name: 'Mon App Vue',
-    themeColor: '#42b883',
-    msTileColor: '#000000',
-    manifestOptions: {
-      background_color: '#ffffff'
-    },
+    name: 'Mon App',
+    themeColor: '#111111',
+    msTileColor: '#111111',
+    appleMobileWebAppCapable: 'yes',
+    appleMobileWebAppStatusBarStyle: 'black',
+
+    workboxPluginMode: 'InjectManifest',
     workboxOptions: {
-      skipWaiting: true,
-      clientsClaim: true
+      swSrc: 'src/service-worker.js'
     }
   }
-})
+}

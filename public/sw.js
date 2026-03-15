@@ -1,32 +1,22 @@
-const CACHE_NAME = 'mini-jeux-cache-v1';
-const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
-];
+/* eslint-disable no-undef */
+import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching'
+import { clientsClaim } from 'workbox-core'
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))
-  );
-  self.skipWaiting();
-});
+// Active immédiatement le nouveau SW
+self.skipWaiting()
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      )
-    )
-  );
-  self.clients.claim();
-});
+// Le nouveau SW prend le contrôle tout de suite
+clientsClaim()
 
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
-  );
-});
+// Nettoie les anciens caches
+cleanupOutdatedCaches()
+
+// Pré-cache injecté automatiquement par Workbox
+precacheAndRoute(self.__WB_MANIFEST)
+
+// Sécurité supplémentaire si on envoie un message depuis registerServiceWorker
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting()
+  }
+})
