@@ -6,9 +6,11 @@ module.exports = {
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
 
-    workboxPluginMode: 'InjectManifest',
+    workboxPluginMode: 'GenerateSW',
     workboxOptions: {
-      swSrc: './src/sw.js',
+      skipWaiting: true,
+      clientsClaim: true,
+      cleanupOutdatedCaches: true,
       exclude: [
         /_headers$/,
         /_redirects$/,

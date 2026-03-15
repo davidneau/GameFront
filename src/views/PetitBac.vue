@@ -269,8 +269,12 @@ export default {
                     })
     }
   },
-  mounted() {
-    this.socket = initSocket();
+  async mounted() {
+    await this.$nextTick();
+
+    setTimeout(() => {
+      this.socket = initSocket({});
+    }, 200);
     
     this.socket.on("players_update", (data) => {
         console.log("player update")

@@ -1,10 +1,6 @@
 {
-  "name": "Overkiller-games",
-  "short_name": "MiniJeux",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#111111",
-  "theme_color": "#111111",
+  "name": "Overkiller Games",
+  "short_name": "Overkiller",
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -12,9 +8,13 @@
       "type": "image/png"
     },
     {
-      "src": "/icons/icon-512.png", 
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#111111",
+  "background_color": "#111111"
 }
