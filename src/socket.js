@@ -2,15 +2,27 @@ import { io } from "socket.io-client";
 
 let socket = null;
 
-export function initSocket(authData = {}) {
+export function initSocket() {
   if (!socket) {
     socket = io(process.env.VUE_APP_API_URL, {
-      transports: ["polling", "websocket"], // fallback polling
-      reconnection: true,
-      reconnectionAttempts: Infinity,
-      reconnectionDelay: 1000,
-      timeout: 10000,
-      auth: authData
+        transports: ["polling", "websocket"], // fallback polling
+        reconnection: true,
+        reconnectionAttempts: Infinity,
+        reconnectionDelay: 1000,
+        timeout: 10000,   
+        auth: {
+            token: localStorage.getItem('token')
+        }
+    });
+
+    io.on("connection", (socket) => {
+        console.log("✅ Client connecté:", socket.id);
+    });
+
+    io.use((socket, next) => {
+        console.log("Handshake WS:", socket.handshake);
+        // tu peux autoriser ici
+        next();
     });
 
     socket.on("connect", () => {
