@@ -180,7 +180,6 @@ export default {
         endGame() {
             this.gameOver = true;
             clearInterval(this.gameInterval);
-            this.messageEl = "💀 Game Over !";
         },
         handleTouch(e) {
             let touchpad = document.getElementById('touchpad')

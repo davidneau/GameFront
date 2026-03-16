@@ -10,6 +10,7 @@ import GameRules from '../views/games/GameRules.vue'
 import GameComments from '../views/games/GameComments.vue'
 import GameLeaderboard from '../views/games/GameLeaderBoard.vue'
 import Snake from '@/views/Snake.vue'
+import Runner from '@/views/Runner.vue'
 
 const routes = [
     { 
@@ -57,6 +58,11 @@ const routes = [
         path: '/jeux/snake/play',
         name: 'snakeRedirect',
         component: Snake
+    },
+    {
+        path: '/jeux/runner/play',
+        name: 'runnerRedirect',
+        component: Runner
     },
     { 
         path: '/signin', 
