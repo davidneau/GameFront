@@ -1,0 +1,332 @@
+<template>
+    <div>
+        <div class="game-container">
+            <h1>Snake</h1>
+
+            <div class="hud">
+                <p>Score : <span id="score">{{ score }}</span></p>
+                <button id="restartBtn">Recommencer</button>
+            </div>
+
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+            <div id="buttons">
+                <button @click="jump">Saut</button>
+                <button>Dash</button>
+            </div>
+            <p id="message">{{ messageEl }}</p>
+        </div>
+    </div>
+</template>
+
+<script>
+
+export default {
+    name: "SnakeGame",
+    data(){
+        return {
+            canvas: "",
+            ctx: "",
+            score: 0,
+            messageEl: "",
+            cellSize: 20,
+            direction: "",
+            gameInterval: "",
+            gameOver: "",
+            pos: 13,
+            saut: false,
+            hautSaut: 0,
+            hautSautMax: 5,
+            posUpdated: false,
+            ascendSaut: false,
+            inTheAir: false,
+            indNewLine: 0,
+            landslide: [["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],
+                        ["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],
+                        ["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],
+                        ["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],
+                        ["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"],
+                        ["B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B","B"]],
+            
+            obstacles: [["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","","","","","","","","","","","","","","","","","",""],
+                        ["","","B","B","B","B","B","B","","","","","","","","","","","",""],
+                        ["B","B","B","B","B","B","B","B","B","B","B","B","","","","","","","B","B"],
+                        ["B","B","B","B","B","B","B","B","B","B","B","B","","","","","","","B","B"],
+                        ["B","B","B","B","B","B","B","B","B","B","B","B","","","","","","","B","B"],
+                        ["B","B","B","B","B","B","B","B","B","B","B","B","","","","","","","B","B"],
+                        ["B","B","B","B","B","B","B","B","B","B","B","B","","","","","","","B","B"],
+                        ["B","B","B","B","B","B","B","B","B","B","B","B","","","","","","","B","B"]]
+        }
+    },
+    methods: {
+        // Initialisation du jeu
+        initGame() {
+            this.direction = { x: 1, y: 0 }; // le serpent va vers la droite
+            this.score = 0;
+            this.gameOver = false;
+
+            // On évite d'avoir plusieurs setInterval en même temps
+            clearInterval(this.gameInterval);
+            this.gameInterval = setInterval(this.gameLoop, 80);
+        },
+
+        // Boucle principale du jeu
+        gameLoop() {
+            if (this.gameOver) return;
+
+            this.draw();
+        },
+
+        // Mise à jour de l'état du jeu
+        jump() {
+            if(!this.saut && !this.inTheAir){
+                this.saut = true; 
+                this.ascendSaut = true
+                this.hautSautMax = this.pos - 5
+            }
+        },
+
+        drawRect(x, y, col){
+            
+            this.ctx.fillStyle = col;
+            this.ctx.fillRect(
+                x * this.cellSize,
+                y * this.cellSize,
+                this.cellSize,
+                this.cellSize
+            );
+        },
+
+        updateGrid(newLine){
+            for (let i = 0; i < 20; i++){
+                let element = newLine[i]
+                this.landslide[i].shift(); // supprime le 1er élément
+                this.landslide[i].push(element);
+            }
+        },
+
+        takeNewCol(matrice, indice){
+            let line = []
+            for (let i=0; i<20; i++){
+                line.push(matrice[i][indice])
+            }
+            return line
+        },
+
+        // Dessin
+        draw() {
+            // Fond
+            this.ctx.fillStyle = "#222";
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+            // Optionnel : grille
+            let newLine = this.takeNewCol(this.obstacles, this.indNewLine%20)
+            this.indNewLine += 1
+            this.updateGrid(newLine)
+
+
+            for (let i = 0; i < 20; i++){
+                for (let j = 0; j < 20; j++){
+                    if (j == 1 && i==this.pos && !this.posUpdated) {
+                        console.log(i,j)
+                        if (this.pos == 19) this.gameOver = true
+                        else {
+                            if (this.landslide[i][j] == "B" && !this.saut) this.gameOver = true
+                            if (this.saut){
+                                this.inTheAir = true
+                                if (this.pos==this.hautSautMax) {
+                                    this.pos += 1
+                                    this.ascendSaut = false
+                                }
+                                else {
+                                    if (this.ascendSaut) {
+                                        this.pos -= 1
+                                    }
+                                    else {
+                                        this.pos += 1
+                                    }
+                                }
+                                console.log(this.landslide[i-this.pos+1][j])
+                                console.log(i-this.pos+1)
+                                this.drawRect(j, this.pos, "green")
+                                if ((this.landslide[this.pos+1][j] == "B") && !this.ascendSaut) {
+                                    this.saut = false
+                                    this.inTheAir = false
+                                    console.log("stop")
+                                }
+                            }
+                            else {
+                                if (this.landslide[i+1][j] == ""){
+                                    this.pos += 1
+                                    this.drawRect(j, i+1, "green")
+                                    this.inTheAir = true
+                                }
+                                else {
+                                    this.drawRect(j, i, "green")
+                                    this.inTheAir = false
+                                }
+                            }
+                            this.posUpdated = true
+                        }
+                    }
+                    if (this.landslide[i][j] == "B") this.drawRect(j, i, "brown")
+                }
+            }
+            this.posUpdated = false
+        },
+
+        // Fin de partie
+        endGame() {
+            this.gameOver = true;
+            clearInterval(this.gameInterval);
+            this.messageEl = "💀 Game Over !";
+        },
+    },
+    mounted(){
+        // Contrôles clavier
+        document.addEventListener("keydown", (e) => {
+            // Empêcher le demi-tour instantané
+            switch (e.key) {
+                case "ArrowUp":
+                    if (this.direction.y === 1) return;
+                    this.direction = { x: 0, y: -1 };
+                    break;
+
+                case "ArrowDown":
+                    if (this.direction.y === -1) return;
+                    this.direction = { x: 0, y: 1 };
+                    break;
+
+                case "ArrowLeft":
+                    if (this.direction.x === 1) return;
+                    this.direction = { x: -1, y: 0 };
+                    break;
+
+                case "ArrowRight":
+                    if (this.direction.x === -1) return;
+                    this.direction = { x: 1, y: 0 };
+                    break;
+            }
+        })
+
+        this.canvas = document.getElementById("gameCanvas")
+
+        this.ctx = this.canvas.getContext("2d")
+        this.tileCount = this.canvas.width / this.cellSize,
+
+        // Bouton restart
+        document.getElementById("restartBtn").addEventListener("click", this.initGame);
+
+        // Lancer le jeu
+        this.initGame();
+        this.draw();
+    }
+}
+</script>
+
+<style>
+.game-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  max-height: 100%;
+  overflow: auto;
+}
+
+#buttons{
+    margin-top: 5px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#touchpad{
+    background-color: grey;
+    width: 60%;
+    aspect-ratio: 1.0;
+    position: relative;
+}
+
+#touchpad>div {
+    background-color: red;
+    border-radius: 50%;
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+#gameCanvas {
+  display: block;
+  width: 100vw;   /* prend toute la largeur de l'écran */
+  height: 100vw;  /* carré, même hauteur que largeur */
+  max-width: 100%;
+  background: #222;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+.hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 20px;
+}
+
+canvas {
+  border-top: 3px solid #fff;
+  border-bottom: 3px solid #fff;
+  background: #222;
+  display: block;
+  margin: 0 auto; 
+}
+
+button {
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+#message {
+  margin-top: 10px;
+  min-height: 24px;
+  font-size: 18px;
+  color: #ff6b6b;
+}
+</style>
