@@ -634,8 +634,7 @@ export default{
 
 .game-wrapper {
     position: relative;
-    width: 1000px;
-    max-width: 95vw;
+    width: 100%;
 }
 
 canvas {
