@@ -660,7 +660,7 @@ export default{
 }
 
 #canvas{
-    height: 800px;
+    aspect-ratio: 1.0;
 }
 
 #app {
