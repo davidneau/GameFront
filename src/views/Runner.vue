@@ -1,19 +1,17 @@
 <template>
     <div class="game-wrapper">
-        <canvas ref="gameCanvas" width="1000" height="500"></canvas>
+        <h1>Geometry Trash</h1>
+        <canvas ref="gameCanvas" width="1000" height="800"></canvas>
 
         <div class="ui">
-        <div>Score : <strong>{{ score }}</strong></div>
-        <div>Vitesse : <strong>{{ speed.toFixed(1) }}</strong></div>
-        <div v-if="gameOver" style="color:#f87171;"><strong>GAME OVER</strong></div>
-        </div>
+            <div>
+                <div>Score : <strong>{{ score }}</strong></div>
+                <div>Vitesse : <strong>{{ speed.toFixed(1) }}</strong></div>
+            </div>
 
-        <button class="btn" @click="restartGame">
-        {{ gameStarted ? (gameOver ? 'Rejouer' : 'Redémarrer') : 'Jouer' }}
-        </button>
-
-        <div class="instructions">
-        Espace / Clic / Tactile = sauter
+            <button class="btn" @click="restartGame">
+                {{ gameStarted ? (gameOver ? 'Rejouer' : 'Redémarrer') : 'Jouer' }}
+            </button>
         </div>
     </div>
 </template>
@@ -54,35 +52,35 @@ export default{
             obstacles: [],
             particles: [],
             groundes: [{
-                y: 420,
+                y: 720,
                 x: 0,
                 width: 5000,
                 height: 80,
                 ground: true,
             },
             {
-                y: 200,
+                y: 300,
                 x: 1000,
                 width: 1000,
                 height: 160,
                 ground: false,
             },
             {
-                y: 360,
+                y: 660,
                 x: 2500,
                 width: 1000,
                 height: 20,
                 ground: false,
             },
             {
-                y: 460,
+                y: 760,
                 x: 5000,
                 width: 1000,
                 height: 80,
                 ground: true
             },
             {
-                y: 460,
+                y: 760,
                 x: 6200,
                 width: 1000,
                 height: 80,
@@ -140,6 +138,41 @@ export default{
             this.spawnInterval = 95;
             this.obstacles = [];
             this.particles = [];
+            this.groundes = [{
+                y: 420,
+                x: 0,
+                width: 5000,
+                height: 80,
+                ground: true,
+            },
+            {
+                y: 200,
+                x: 1000,
+                width: 1000,
+                height: 160,
+                ground: false,
+            },
+            {
+                y: 360,
+                x: 2500,
+                width: 1000,
+                height: 20,
+                ground: false,
+            },
+            {
+                y: 460,
+                x: 5000,
+                width: 1000,
+                height: 80,
+                ground: true
+            },
+            {
+                y: 460,
+                x: 6200,
+                width: 1000,
+                height: 80,
+                ground: true
+            }];
             this.bgOffset = 0;
 
             this.resetPlayer();
@@ -164,12 +197,12 @@ export default{
 
         handleJumpInput() {
             if (!this.gameStarted) {
-            this.startGame();
+                this.startGame();
             return;
             }
 
             if (this.gameOver) {
-            this.restartGame();
+                this.restartGame();
             return;
             }
 
@@ -232,7 +265,7 @@ export default{
 
             // Rotation en l'air (effet cube)
             if (!this.player.grounded) {
-                this.player.rotation += 0.15;
+                this.player.rotation += 1;
             } else {
                 // snap rotation au multiple de 90°
                 const quarterTurn = Math.PI / 2;
@@ -650,6 +683,7 @@ canvas {
 .ui {
     margin-top: 14px;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     gap: 12px;
     flex-wrap: wrap;
