@@ -1,7 +1,7 @@
 <template>
     <div class="game-wrapper">
         <h1>Geometry Trash</h1>
-        <canvas ref="gameCanvas" width="1000" height="800"></canvas>
+        <canvas ref="gameCanvas" id="canvas" width="1000" height="800"></canvas>
 
         <div class="ui">
             <div>
@@ -27,7 +27,7 @@ export default{
             animationId: null,
 
             width: 1000,
-            height: 500,
+            height: 800,
             groundY: 420,
 
             gameStarted: false,
@@ -139,35 +139,35 @@ export default{
             this.obstacles = [];
             this.particles = [];
             this.groundes = [{
-                y: 420,
+                y: 720,
                 x: 0,
                 width: 5000,
                 height: 80,
                 ground: true,
             },
             {
-                y: 200,
+                y: 500,
                 x: 1000,
                 width: 1000,
                 height: 160,
                 ground: false,
             },
             {
-                y: 360,
+                y: 660,
                 x: 2500,
                 width: 1000,
                 height: 20,
                 ground: false,
             },
             {
-                y: 460,
+                y: 760,
                 x: 5000,
                 width: 1000,
                 height: 80,
                 ground: true
             },
             {
-                y: 460,
+                y: 760,
                 x: 6200,
                 width: 1000,
                 height: 80,
@@ -261,7 +261,7 @@ export default{
             this.player.velocityY += this.player.gravity;
             this.player.y += this.player.velocityY;
 
-            if (this.player.y >= 500) this.endGame()
+            if (this.player.y >= 800) this.endGame()
 
             // Rotation en l'air (effet cube)
             if (!this.player.grounded) {
@@ -274,9 +274,6 @@ export default{
 
             for (const grd of this.groundes){
                 if (this.rectVsRect(this.player, grd)){
-                    console.log(this.player.x + this.player.width)
-                    console.log(grd.x)
-                    console.log((this.player.y + this.player.height - this.player.velocityY) - grd.y)
                     if (this.player.x + this.player.width == grd.x ||
                         (this.player.y + this.player.height - this.player.velocityY) - grd.y > 1  &&
                         !grd.ground) {
@@ -421,15 +418,15 @@ export default{
         update() {
             if (this.gameOver) return;
 
-                this.frameCount++;
-                this.bgOffset -= this.speed * 0.4;
+            this.frameCount++;
+            this.bgOffset -= this.speed * 0.4;
 
-                this.updatePlayer();
-                this.updateObstacles();
-                this.updateParticles();
-                this.updateDifficulty();
+            this.updatePlayer();
+            this.updateObstacles();
+            this.updateParticles();
+            this.updateDifficulty();
 
-                this.spawnTimer++;
+            this.spawnTimer++;
             if (this.spawnTimer >= this.spawnInterval) {
                 //this.spawnObstacle();
                 this.spawnTimer = 0;
@@ -547,6 +544,7 @@ export default{
                 ctx.shadowColor = "blue";
                 ctx.shadowBlur = 14;
                 ctx.fillStyle = "blue";
+                console.log(grd.y)
                 ctx.fillRect(grd.x, grd.y, grd.width, grd.height);
                 ctx.shadowBlur = 0;
                 ctx.strokeStyle = "aquamarine";
@@ -659,6 +657,10 @@ export default{
     margin: 0;
     padding: 0;
     user-select: none;
+}
+
+#canvas{
+    height: 800px;
 }
 
 #app {
