@@ -38,16 +38,21 @@ export default{
             frameCount: 0,
 
             player: {
-            x: 140,
-            y: 0,
-            width: 42,
-            height: 42,
-            velocityY: 0,
-            gravity: 0.72,
-            jumpForce: -13.5,
-            grounded: false,
-            rotation: 0
+                x: 140,
+                y: 0,
+                width: 42,
+                height: 42,
+                velocityY: 0,
+                gravity: 0.72,
+                jumpForce: -13.5,
+                grounded: false,
+                rotation: 0
             },
+
+            lastTime: 0,
+            accumulator: 0,
+
+            fixedDt: 1/60,
 
             obstacles: [],
             particles: [],
@@ -419,12 +424,12 @@ export default{
             ctx.globalAlpha = 0.18;
 
             for (let i = 0; i < 8; i++) {
-            const y = 60 + i * 35;
-            const offset = (this.bgOffset * (0.5 + i * 0.1)) % 200;
-            for (let x = -200; x < this.width + 200; x += 200) {
-                ctx.fillStyle = i % 2 === 0 ? "#22d3ee" : "#a78bfa";
-                ctx.fillRect(x + offset, y, 90, 4);
-            }
+                const y = 60 + i * 35;
+                const offset = (this.bgOffset * (0.5 + i * 0.1)) % 200;
+                for (let x = -200; x < this.width + 200; x += 200) {
+                    ctx.fillStyle = i % 2 === 0 ? "#22d3ee" : "#a78bfa";
+                    ctx.fillRect(x + offset, y, 90, 4);
+                }
             }
 
             ctx.restore();
@@ -609,12 +614,25 @@ export default{
             this.drawHUD();
         },
 
-        loop() {
+        loop(timestamp) {
+            if (!this.lastTime) this.lastTime = timestamp;
+
+            let frameTime = (timestamp - this.lastTime) / 1000;
+            this.lastTime = timestamp;
+
+            frameTime = Math.min(frameTime, 0.05); // évite les gros freezes
+            this.accumulator += frameTime;
+
+            while (this.accumulator >= this.fixedDt) {
+                this.update(this.fixedDt); // logique stable
+                this.accumulator -= this.fixedDt;
+            }
+
             this.update();
             this.draw();
 
             if (!this.gameOver) {
-            this.animationId = requestAnimationFrame(this.loop);
+                this.animationId = requestAnimationFrame(this.loop);
             }
         }
     },
