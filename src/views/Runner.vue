@@ -51,41 +51,7 @@ export default{
 
             obstacles: [],
             particles: [],
-            groundes: [{
-                y: 720,
-                x: 0,
-                width: 5000,
-                height: 80,
-                ground: true,
-            },
-            {
-                y: 300,
-                x: 1000,
-                width: 1000,
-                height: 160,
-                ground: false,
-            },
-            {
-                y: 660,
-                x: 2500,
-                width: 1000,
-                height: 20,
-                ground: false,
-            },
-            {
-                y: 760,
-                x: 5000,
-                width: 1000,
-                height: 80,
-                ground: true
-            },
-            {
-                y: 760,
-                x: 6200,
-                width: 1000,
-                height: 80,
-                ground: true
-            }],
+            groundes: [],
 
             spawnTimer: 0,
             spawnInterval: 95,
@@ -97,8 +63,6 @@ export default{
     mounted() {
         this.canvas = this.$refs.gameCanvas;
         this.ctx = this.canvas.getContext("2d");
-
-        console.log(this.groundes)
 
         this.resetPlayer();
         this.drawStartScreen();
@@ -136,43 +100,68 @@ export default{
             this.frameCount = 0;
             this.spawnTimer = 0;
             this.spawnInterval = 95;
-            this.obstacles = [];
+            this.obstacles = [{
+                    type: "spike",
+                    x: 1000,
+                    y: 685,
+                    width: 35,
+                    height: 35,
+                    counted: false
+            },{
+                    type: "spike",
+                    x: 1400,
+                    y: 685,
+                    width: 35,
+                    height: 35,
+                    counted: false
+            },{
+                    type: "spike",
+                    x: 1435,
+                    y: 685,
+                    width: 35,
+                    height: 35,
+                    counted: false
+            }];
             this.particles = [];
             this.groundes = [{
                 y: 720,
                 x: 0,
-                width: 5000,
+                width: 20000,
                 height: 80,
                 ground: true,
             },
             {
-                y: 500,
-                x: 1000,
-                width: 1000,
-                height: 160,
-                ground: false,
-            },
-            {
-                y: 660,
-                x: 2500,
-                width: 1000,
+                y: 640,
+                x: 2000,
+                width: 100,
                 height: 20,
                 ground: false,
             },
             {
-                y: 760,
-                x: 5000,
-                width: 1000,
-                height: 80,
-                ground: true
+                y: 580,
+                x: 2300,
+                width: 100,
+                height: 20,
+                ground: false,
             },
             {
-                y: 760,
-                x: 6200,
-                width: 1000,
-                height: 80,
-                ground: true
+                y: 520,
+                x: 2600,
+                width: 100,
+                height: 20,
+                ground: false,
             }];
+
+            for (let i=0; i<= 20; i++) {
+                this.obstacles.push({
+                    type: "spike",
+                    x: 2000 + i*35,
+                    y: 685,
+                    width: 35,
+                    height: 35,
+                    counted: false
+                })
+            }
             this.bgOffset = 0;
 
             this.resetPlayer();
@@ -230,30 +219,17 @@ export default{
             }
         },
 
-        spawnObstacle() {
-            const type = Math.random() > 0.25 ? "spike" : "block";
-
+        spawnObstacle(type, x, y) {
             if (type === "spike") {
                 const size = 38 + Math.random() * 20;
                 this.obstacles.push({
                     type: "spike",
-                    x: this.width + 20,
-                    y: this.groundY - size,
+                    x: x,
+                    y: y,
                     width: size,
                     height: size,
                     counted: false
-            });
-            } else {
-                const w = 40 + Math.random() * 25;
-                const h = 35 + Math.random() * 50;
-                this.obstacles.push({
-                    type: "block",
-                    x: this.width + 20,
-                    y: this.groundY - h,
-                    width: w,
-                    height: h,
-                    counted: false
-                });
+                })
             }
         },
 
@@ -544,7 +520,6 @@ export default{
                 ctx.shadowColor = "blue";
                 ctx.shadowBlur = 14;
                 ctx.fillStyle = "blue";
-                console.log(grd.y)
                 ctx.fillRect(grd.x, grd.y, grd.width, grd.height);
                 ctx.shadowBlur = 0;
                 ctx.strokeStyle = "aquamarine";
