@@ -96,82 +96,88 @@ export default{
         },
 
         startGame() {
-            if (this.animationId) cancelAnimationFrame(this.animationId);
+    if (this.animationId) cancelAnimationFrame(this.animationId);
 
-            this.gameStarted = true;
-            this.gameOver = false;
-            this.score = 0;
-            this.speed = 6;
-            this.frameCount = 0;
-            this.spawnTimer = 0;
-            this.spawnInterval = 95;
-            this.obstacles = [{
-                    type: "spike",
-                    x: 1000,
-                    y: 685,
-                    width: 35,
-                    height: 35,
-                    counted: false
-            },{
-                    type: "spike",
-                    x: 1400,
-                    y: 685,
-                    width: 35,
-                    height: 35,
-                    counted: false
-            },{
-                    type: "spike",
-                    x: 1435,
-                    y: 685,
-                    width: 35,
-                    height: 35,
-                    counted: false
-            }];
-            this.particles = [];
-            this.groundes = [{
-                y: 720,
-                x: 0,
-                width: 20000,
-                height: 80,
-                ground: true,
-            },
-            {
-                y: 640,
-                x: 2000,
-                width: 100,
-                height: 20,
-                ground: false,
-            },
-            {
-                y: 580,
-                x: 2300,
-                width: 100,
-                height: 20,
-                ground: false,
-            },
-            {
-                y: 520,
-                x: 2600,
-                width: 100,
-                height: 20,
-                ground: false,
-            }];
+    this.gameStarted = true;
+    this.gameOver = false;
+    this.score = 0;
+    this.speed = 6;
+    this.frameCount = 0;
+    this.spawnTimer = 0;
+    this.spawnInterval = 95;
+    this.obstacles = [{
+            type: "spike",
+            x: 1000,
+            y: 685,
+            width: 35,
+            height: 35,
+            counted: false
+    },{
+            type: "spike",
+            x: 1400,
+            y: 685,
+            width: 35,
+            height: 35,
+            counted: false
+    },{
+            type: "spike",
+            x: 1435,
+            y: 685,
+            width: 35,
+            height: 35,
+            counted: false
+    }];
+    this.particles = [];
+    this.groundes = [{
+        y: 720,
+        x: 0,
+        width: 20000,
+        height: 80,
+        ground: true,
+    },
+    {
+        y: 640,
+        x: 2000,
+        width: 100,
+        height: 20,
+        ground: false,
+    },
+    {
+        y: 580,
+        x: 2300,
+        width: 100,
+        height: 20,
+        ground: false,
+    },
+    {
+        y: 520,
+        x: 2600,
+        width: 100,
+        height: 20,
+        ground: false,
+    }];
 
-            for (let i=0; i<= 20; i++) {
-                this.obstacles.push({
-                    type: "spike",
-                    x: 2000 + i*35,
-                    y: 685,
-                    width: 35,
-                    height: 35,
-                    counted: false
-                })
-            }
-            this.bgOffset = 0;
+    for (let i = 0; i <= 20; i++) {
+        this.obstacles.push({
+            type: "spike",
+            x: 2000 + i * 35,
+            y: 685,
+            width: 35,
+            height: 35,
+            counted: false
+        });
+    }
 
-            this.resetPlayer();
-            this.loop();
-        },
+    this.bgOffset = 0;
+
+    this.resetPlayer();
+
+    // IMPORTANT : reset du timing pour le fixed timestep
+    this.lastTime = 0;
+    this.accumulator = 0;
+
+    this.animationId = requestAnimationFrame(this.loop);
+},
 
         restartGame() {
             this.startGame();
@@ -237,74 +243,93 @@ export default{
                 })
             }
         },
+        updatePlayer(dt) {
+    const step = 60 * dt;
 
-        updatePlayer() {
-            this.player.velocityY += this.player.gravity;
-            this.player.y += this.player.velocityY;
+    this.player.velocityY += this.player.gravity * step;
+    this.player.y += this.player.velocityY * step;
 
-            if (this.player.y >= 800) this.endGame()
+    if (this.player.y >= 800) {
+        this.endGame();
+        return;
+    }
 
-            // Rotation en l'air (effet cube)
-            if (!this.player.grounded) {
-                this.player.rotation += 1;
+    // Rotation en l'air (effet cube)
+    if (!this.player.grounded) {
+        this.player.rotation += 0.12 * step; // ~1 tour / 52 frames
+    } else {
+        // snap rotation au multiple de 90°
+        const quarterTurn = Math.PI / 2;
+        this.player.rotation = Math.round(this.player.rotation / quarterTurn) * quarterTurn;
+    }
+
+    // On considère qu'il est en l'air tant qu'on n'a pas trouvé de sol
+    this.player.grounded = false;
+
+    for (const grd of this.groundes) {
+        if (this.rectVsRect(this.player, grd)) {
+            const previousBottom = (this.player.y + this.player.height) - (this.player.velocityY * step);
+
+            // collision par le côté / par dessous sur plateformes flottantes = game over
+            if (
+                this.player.x + this.player.width >= grd.x &&
+                previousBottom > grd.y + 1 &&
+                !grd.ground
+            ) {
+                this.endGame();
+                return;
             } else {
-                // snap rotation au multiple de 90°
-                const quarterTurn = Math.PI / 2;
-                this.player.rotation = Math.round(this.player.rotation / quarterTurn) * quarterTurn;
+                // atterrissage sur le dessus
+                this.player.y = grd.y - this.player.height;
+                this.player.velocityY = 0;
+                this.player.grounded = true;
             }
+        }
+    }
+},
 
-            for (const grd of this.groundes){
-                if (this.rectVsRect(this.player, grd)){
-                    if (this.player.x + this.player.width == grd.x ||
-                        (this.player.y + this.player.height - this.player.velocityY) - grd.y > 1  &&
-                        !grd.ground) {
-                        this.endGame()
-                    } else {
-                        this.player.y = grd.y - this.player.height;
-                        this.player.velocityY = 0;
-                        this.player.grounded = true;
-                    }
-                }
-            }
-        },
+        updateObstacles(dt) {
+    const step = 60 * dt;
 
-        updateObstacles() {
-            for (let i = this.obstacles.length - 1; i >= 0; i--) {
-                const obs = this.obstacles[i];
-                obs.x -= this.speed;
+    for (let i = this.obstacles.length - 1; i >= 0; i--) {
+        const obs = this.obstacles[i];
+        obs.x -= this.speed * step;
 
-                if (!obs.counted && obs.x + obs.width < this.player.x) {
-                    obs.counted = true;
-                    this.score++;
-                }
+        if (!obs.counted && obs.x + obs.width < this.player.x) {
+            obs.counted = true;
+            this.score++;
+        }
 
-                if (obs.x + obs.width < -50) {
-                    this.obstacles.splice(i, 1);
-                }
-            }
-            for (let i = this.groundes.length - 1; i >= 0; i--) {
-                const grd = this.groundes[i];
-                grd.x -= this.speed;
+        if (obs.x + obs.width < -50) {
+            this.obstacles.splice(i, 1);
+        }
+    }
 
-                if (grd.x + grd.width < -50) {
-                    this.groundes.splice(i, 1);
-                }
-            }
-        },
+    for (let i = this.groundes.length - 1; i >= 0; i--) {
+        const grd = this.groundes[i];
+        grd.x -= this.speed * step;
 
-        updateParticles() {
-            for (let i = this.particles.length - 1; i >= 0; i--) {
-            const p = this.particles[i];
-            p.x += p.vx;
-            p.y += p.vy;
-            p.vy += 0.08;
-            p.life--;
+        if (grd.x + grd.width < -50) {
+            this.groundes.splice(i, 1);
+        }
+    }
+},
 
-            if (p.life <= 0) {
-                this.particles.splice(i, 1);
-            }
-            }
-        },
+        updateParticles(dt) {
+    const step = 60 * dt;
+
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+        const p = this.particles[i];
+        p.x += p.vx * step;
+        p.y += p.vy * step;
+        p.vy += 0.08 * step;
+        p.life -= step;
+
+        if (p.life <= 0) {
+            this.particles.splice(i, 1);
+        }
+    }
+},
 
         updateDifficulty() {
             // augmente progressivement la vitesse
@@ -390,31 +415,42 @@ export default{
         },
 
         endGame() {
-            this.gameOver = true;
-            cancelAnimationFrame(this.animationId);
-            this.draw();
-            this.drawGameOverOverlay();
-        },
+    if (this.gameOver) return;
 
-        update() {
-            if (this.gameOver) return;
+    this.gameOver = true;
 
-            this.frameCount++;
-            this.bgOffset -= this.speed * 0.4;
+    if (this.animationId) {
+        cancelAnimationFrame(this.animationId);
+        this.animationId = null;
+    }
 
-            this.updatePlayer();
-            this.updateObstacles();
-            this.updateParticles();
-            this.updateDifficulty();
+    this.draw();
+    this.drawGameOverOverlay();
+},
 
-            this.spawnTimer++;
-            if (this.spawnTimer >= this.spawnInterval) {
-                //this.spawnObstacle();
-                this.spawnTimer = 0;
-            }
+        update(dt) {
+    if (this.gameOver) return;
 
-            this.checkCollisions();
-        },
+    const step = 60 * dt;
+
+    this.frameCount++;
+    this.bgOffset -= this.speed * 0.4 * step;
+
+    this.updatePlayer(dt);
+    if (this.gameOver) return;
+
+    this.updateObstacles(dt);
+    this.updateParticles(dt);
+    this.updateDifficulty();
+
+    this.spawnTimer += step;
+    if (this.spawnTimer >= this.spawnInterval) {
+        // this.spawnObstacle();
+        this.spawnTimer = 0;
+    }
+
+    this.checkCollisions();
+},
 
         drawBackground() {
             const ctx = this.ctx;
@@ -615,26 +651,33 @@ export default{
         },
 
         loop(timestamp) {
-            if (!this.lastTime) this.lastTime = timestamp;
+    if (this.gameOver) return;
 
-            let frameTime = (timestamp - this.lastTime) / 1000;
-            this.lastTime = timestamp;
+    if (!this.lastTime) {
+        this.lastTime = timestamp;
+    }
 
-            frameTime = Math.min(frameTime, 0.05); // évite les gros freezes
-            this.accumulator += frameTime;
+    let frameTime = (timestamp - this.lastTime) / 1000;
+    this.lastTime = timestamp;
 
-            while (this.accumulator >= this.fixedDt) {
-                this.update(this.fixedDt); // logique stable
-                this.accumulator -= this.fixedDt;
-            }
+    // évite les gros bonds si freeze / onglet en pause / mobile lag
+    frameTime = Math.min(frameTime, 0.05);
 
-            this.update();
-            this.draw();
+    this.accumulator += frameTime;
 
-            if (!this.gameOver) {
-                this.animationId = requestAnimationFrame(this.loop);
-            }
-        }
+    while (this.accumulator >= this.fixedDt) {
+        this.update(this.fixedDt);
+        this.accumulator -= this.fixedDt;
+
+        if (this.gameOver) break;
+    }
+
+    this.draw();
+
+    if (!this.gameOver) {
+        this.animationId = requestAnimationFrame(this.loop);
+    }
+}
     },
 
     created() {
