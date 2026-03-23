@@ -148,7 +148,7 @@ export default{
         x: 2100,
         width: 300,
         height: 20,
-        ground: true,
+        ground: false,
     },
     {
         y: 720,
@@ -162,28 +162,28 @@ export default{
         x: 3100,
         width: 100,
         height: 20,
-        ground: true,
+        ground: false,
     },
     {
         y: 660,
         x: 4000,
         width: 100,
         height: 20,
-        ground: true,
+        ground: false,
     },
     {
         y: 600,
         x: 4300,
         width: 100,
         height: 20,
-        ground: true,
+        ground: false,
     },
     {
         y: 540,
         x: 4600,
         width: 100,
         height: 20,
-        ground: true,
+        ground: false,
     }];
 
     this.bgOffset = 0;
@@ -297,6 +297,13 @@ export default{
                 this.endGame();
                 return;
             } else {
+                console.log(this.player.grounded)
+                if(!this.player.grounded && !grd.ground){
+                    console.log(this.player.x + this.player.width)
+                    console.log(grd.x)
+                    console.log(previousBottom)
+                    console.log(grd.y + 1)
+                }
                 // atterrissage sur le dessus
                 this.player.y = grd.y - this.player.height;
                 this.player.velocityY = 0;
