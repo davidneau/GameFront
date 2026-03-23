@@ -6,7 +6,7 @@
         <div class="ui">
             <div>
                 <div>Score : <strong>{{ score }}</strong></div>
-                <div>Vitesse : <strong>{{ speed.toFixed(1) }}</strong></div>
+                <div>Progression : {{ frameCount }} / {{ frameCountMax }}</div>
             </div>
 
             <button class="btn" @click="restartGame">
@@ -36,6 +36,7 @@ export default{
             score: 0,
             speed: 6,
             frameCount: 0,
+            frameCountMax: 2000,
 
             player: {
                 x: 140,
@@ -131,42 +132,59 @@ export default{
     this.groundes = [{
         y: 720,
         x: 0,
-        width: 20000,
+        width: 2000,
         height: 80,
         ground: true,
     },
     {
-        y: 640,
-        x: 2000,
-        width: 100,
-        height: 20,
-        ground: false,
+        y: 720,
+        x: 2500,
+        width: 400,
+        height: 80,
+        ground: true,
     },
     {
-        y: 580,
-        x: 2300,
-        width: 100,
+        y: 660,
+        x: 2100,
+        width: 300,
         height: 20,
-        ground: false,
+        ground: true,
     },
     {
-        y: 520,
-        x: 2600,
+        y: 720,
+        x: 3400,
+        width: 17500,
+        height: 80,
+        ground: true,
+    },
+    {
+        y: 660,
+        x: 3100,
         width: 100,
         height: 20,
-        ground: false,
+        ground: true,
+    },
+    {
+        y: 660,
+        x: 4000,
+        width: 100,
+        height: 20,
+        ground: true,
+    },
+    {
+        y: 600,
+        x: 4300,
+        width: 100,
+        height: 20,
+        ground: true,
+    },
+    {
+        y: 540,
+        x: 4600,
+        width: 100,
+        height: 20,
+        ground: true,
     }];
-
-    for (let i = 0; i <= 20; i++) {
-        this.obstacles.push({
-            type: "spike",
-            x: 2000 + i * 35,
-            y: 685,
-            width: 35,
-            height: 35,
-            counted: false
-        });
-    }
 
     this.bgOffset = 0;
 
@@ -434,6 +452,7 @@ export default{
     const step = 60 * dt;
 
     this.frameCount++;
+    if (this.frameCount == this.frameCountMax) this.endGame()
     this.bgOffset -= this.speed * 0.4 * step;
 
     this.updatePlayer(dt);
