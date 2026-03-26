@@ -11,6 +11,7 @@ import GameComments from '../views/games/GameComments.vue'
 import GameLeaderboard from '../views/games/GameLeaderBoard.vue'
 import Snake from '@/views/Snake.vue'
 import Runner from '@/views/Runner.vue'
+import JDR from '@/views/JDR.vue'
 
 const routes = [
     { 
@@ -63,6 +64,11 @@ const routes = [
         path: '/jeux/runner/play',
         name: 'runnerRedirect',
         component: Runner
+    },
+    {
+        path: '/jeux/jdr/play',
+        name: 'jdrRedirect',
+        component: JDR
     },
     { 
         path: '/signin', 

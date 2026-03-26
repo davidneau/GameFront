@@ -3,6 +3,7 @@
         <router-link to="/jeux/petitBac/">Petit Bac</router-link>
         <router-link to="/jeux/snake/">Snake</router-link>
         <router-link to="/jeux/runner/">Runner</router-link>
+        <router-link to="/jeux/jdr/play">JDR</router-link>
     </div>
 </template>
 
