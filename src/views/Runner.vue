@@ -62,7 +62,8 @@ export default{
             spawnTimer: 0,
             spawnInterval: 95,
 
-            bgOffset: 0
+            bgOffset: 0,
+            chrono: null,
         };
     },
 
@@ -97,105 +98,107 @@ export default{
         },
 
         startGame() {
-    if (this.animationId) cancelAnimationFrame(this.animationId);
+            this.chrono = performance.now();
 
-    this.gameStarted = true;
-    this.gameOver = false;
-    this.score = 0;
-    this.speed = 6;
-    this.frameCount = 0;
-    this.spawnTimer = 0;
-    this.spawnInterval = 95;
-    this.obstacles = [{
-            type: "spike",
-            x: 1000,
-            y: 685,
-            width: 35,
-            height: 35,
-            counted: false
-    },{
-            type: "spike",
-            x: 1400,
-            y: 685,
-            width: 35,
-            height: 35,
-            counted: false
-    },{
-            type: "spike",
-            x: 1435,
-            y: 685,
-            width: 35,
-            height: 35,
-            counted: false
-    }];
-    this.particles = [];
-    this.groundes = [{
-        y: 720,
-        x: 0,
-        width: 2000,
-        height: 80,
-        ground: true,
-    },
-    {
-        y: 720,
-        x: 2500,
-        width: 400,
-        height: 80,
-        ground: true,
-    },
-    {
-        y: 660,
-        x: 2100,
-        width: 300,
-        height: 20,
-        ground: false,
-    },
-    {
-        y: 720,
-        x: 3400,
-        width: 17500,
-        height: 80,
-        ground: true,
-    },
-    {
-        y: 660,
-        x: 3100,
-        width: 100,
-        height: 20,
-        ground: false,
-    },
-    {
-        y: 660,
-        x: 4000,
-        width: 100,
-        height: 20,
-        ground: false,
-    },
-    {
-        y: 600,
-        x: 4300,
-        width: 100,
-        height: 20,
-        ground: false,
-    },
-    {
-        y: 540,
-        x: 4600,
-        width: 100,
-        height: 20,
-        ground: false,
-    }];
+            if (this.animationId) cancelAnimationFrame(this.animationId);
 
-    this.bgOffset = 0;
+            this.gameStarted = true;
+            this.gameOver = false;
+            this.score = 0;
+            this.speed = 6;
+            this.frameCount = 0;
+            this.spawnTimer = 0;
+            this.spawnInterval = 95;
+            this.obstacles = [{
+                    type: "spike",
+                    x: 1000,
+                    y: 685,
+                    width: 35,
+                    height: 35,
+                    counted: false
+            },{
+                    type: "spike",
+                    x: 1400,
+                    y: 685,
+                    width: 35,
+                    height: 35,
+                    counted: false
+            },{
+                    type: "spike",
+                    x: 1435,
+                    y: 685,
+                    width: 35,
+                    height: 35,
+                    counted: false
+            }];
+            this.particles = [];
+            this.groundes = [{
+                y: 720,
+                x: 0,
+                width: 2000,
+                height: 80,
+                ground: true,
+            },
+            {
+                y: 720,
+                x: 2500,
+                width: 400,
+                height: 80,
+                ground: true,
+            },
+            {
+                y: 660,
+                x: 2100,
+                width: 300,
+                height: 20,
+                ground: false,
+            },
+            {
+                y: 720,
+                x: 3400,
+                width: 17500,
+                height: 80,
+                ground: true,
+            },
+            {
+                y: 660,
+                x: 3100,
+                width: 100,
+                height: 20,
+                ground: false,
+            },
+            {
+                y: 660,
+                x: 4000,
+                width: 100,
+                height: 20,
+                ground: false,
+            },
+            {
+                y: 600,
+                x: 4300,
+                width: 100,
+                height: 20,
+                ground: false,
+            },
+            {
+                y: 540,
+                x: 4600,
+                width: 100,
+                height: 20,
+                ground: false,
+            }];
 
-    this.resetPlayer();
+            this.bgOffset = 0;
 
-    // IMPORTANT : reset du timing pour le fixed timestep
-    this.lastTime = 0;
-    this.accumulator = 0;
+            this.resetPlayer();
 
-    this.animationId = requestAnimationFrame(this.loop);
-},
+            // IMPORTANT : reset du timing pour le fixed timestep
+            this.lastTime = 0;
+            this.accumulator = 0;
+
+            this.animationId = requestAnimationFrame(this.loop);
+        },
 
         restartGame() {
             this.startGame();
@@ -297,13 +300,6 @@ export default{
                 this.endGame();
                 return;
             } else {
-                console.log(this.player.grounded)
-                if(!this.player.grounded && !grd.ground){
-                    console.log(this.player.x + this.player.width)
-                    console.log(grd.x)
-                    console.log(previousBottom)
-                    console.log(grd.y + 1)
-                }
                 // atterrissage sur le dessus
                 this.player.y = grd.y - this.player.height;
                 this.player.velocityY = 0;
@@ -677,33 +673,41 @@ export default{
         },
 
         loop(timestamp) {
-    if (this.gameOver) return;
+            let time_tok = document.getElementById("time_tokens").children[0]
+            let time = (performance.now() - this.chrono) / 60000
+            if (time > 1/60){
+                console.log(time)
+                this.chrono = performance.now()
+                console.log(time_tok)
+                time_tok.innerText = (parseFloat(time_tok.innerText) - time).toFixed(2)
+            }
+            if (this.gameOver) return;
 
-    if (!this.lastTime) {
-        this.lastTime = timestamp;
-    }
+            if (!this.lastTime) {
+                this.lastTime = timestamp;
+            }
 
-    let frameTime = (timestamp - this.lastTime) / 1000;
-    this.lastTime = timestamp;
+            let frameTime = (timestamp - this.lastTime) / 1000;
+            this.lastTime = timestamp;
 
-    // évite les gros bonds si freeze / onglet en pause / mobile lag
-    frameTime = Math.min(frameTime, 0.05);
+            // évite les gros bonds si freeze / onglet en pause / mobile lag
+            frameTime = Math.min(frameTime, 0.05);
 
-    this.accumulator += frameTime;
+            this.accumulator += frameTime;
 
-    while (this.accumulator >= this.fixedDt) {
-        this.update(this.fixedDt);
-        this.accumulator -= this.fixedDt;
+            while (this.accumulator >= this.fixedDt) {
+                this.update(this.fixedDt);
+                this.accumulator -= this.fixedDt;
 
-        if (this.gameOver) break;
-    }
+                if (this.gameOver) break;
+            }
 
-    this.draw();
+            this.draw();
 
-    if (!this.gameOver) {
-        this.animationId = requestAnimationFrame(this.loop);
-    }
-}
+            if (!this.gameOver) {
+                this.animationId = requestAnimationFrame(this.loop);
+            }
+        }
     },
 
     created() {

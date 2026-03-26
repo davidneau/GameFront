@@ -25,13 +25,14 @@ export default ({
     methods: {
         enter(){
             let identifiant = document.getElementById("identifiant").value
-            localStorage.setItem('playerName', identifiant);
             let password = document.getElementById("password").value
             console.log(identifiant)
             console.log(password)
 
             login(identifiant, password)
-            .then(() => {
+            .then((data) => {
+                localStorage.setItem('playerName', identifiant);
+                localStorage.setItem("time_tokens", data.time_token)
                 return getProfile();
             })
             .then(profile => {

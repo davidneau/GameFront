@@ -10,7 +10,7 @@ export async function login(identifiant, password) {
     return API.post('/login', { 'identifiant': identifiant, 'password': password })
         .then(res => {
             localStorage.setItem('token', res.data.access_token);
-            console.log("setItem token ", res.data.access_token)
+            console.log("setItem token ", res.data)
             return res.data;
         });
 }

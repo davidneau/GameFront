@@ -1,5 +1,5 @@
 <template>
-  <Banner :playerName="playerName"></Banner>
+  <Banner :playerName="playerName"  :time_tokens="time_tokens"></Banner>
   <router-view id="routerView"/>
 </template>
 
@@ -13,12 +13,15 @@ export default {
   },
   data() {
     return {
-        playerName: ""
+        playerName: "",
+        time_tokens: 0.00,
     }
   },
   mounted() {
     console.log(localStorage.getItem('playerName'))
     this.playerName = localStorage.getItem('playerName')
+    console.log(localStorage.getItem('time_tokens'))
+    this.time_tokens = localStorage.getItem('time_tokens')
   }
 }
 </script>
