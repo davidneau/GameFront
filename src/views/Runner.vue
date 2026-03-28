@@ -1,17 +1,19 @@
 <template>
-    <div class="game-wrapper">
+    <div>
         <h1>Geometry Trash</h1>
-        <canvas ref="gameCanvas" id="canvas" width="1000" height="800"></canvas>
+        <div class="game-wrapper">
+            <canvas ref="gameCanvas" id="canvas" width="1000" height="800"></canvas>
 
-        <div class="ui">
-            <div>
-                <div>Score : <strong>{{ score }}</strong></div>
-                <div>Progression : {{ frameCount }} / {{ frameCountMax }}</div>
+            <div class="ui">
+                <div>
+                    <div>Score : <strong>{{ score }}</strong></div>
+                    <div>Progression : {{ frameCount }} / {{ frameCountMax }}</div>
+                </div>
+
+                <button class="btn" @click="restartGame">
+                    {{ gameStarted ? (gameOver ? 'Rejouer' : 'Redémarrer') : 'Jouer' }}
+                </button>
             </div>
-
-            <button class="btn" @click="restartGame">
-                {{ gameStarted ? (gameOver ? 'Rejouer' : 'Redémarrer') : 'Jouer' }}
-            </button>
         </div>
     </div>
 </template>
@@ -357,8 +359,40 @@ export default{
             };
 
             for (const obs of this.obstacles) {
-                if (obs.type === "block") {
-                    if (this.rectVsRect(playerBox, obs)) {
+                if (obs.type === "spikeDown") {
+                    // Collision plus précise pour le spike :
+                    // 1) AABB grossière
+                    if (!this.rectVsRect(playerBox, obs)) continue;
+
+                    // 2) Test points du joueur contre triangle du spike
+                    const spikeTriangle = [
+                        { x: obs.x, y: obs.y},                 // bas gauche
+                        { x: obs.x + obs.width / 2, y: obs.y  + obs.height},             // pointe
+                        { x: obs.x + obs.width, y: obs.y}     // bas droite
+                    ];
+
+                    const playerPoints = [
+                        { x: playerBox.x, y: playerBox.y },
+                        { x: playerBox.x + playerBox.width, y: playerBox.y },
+                        { x: playerBox.x, y: playerBox.y + playerBox.height },
+                        { x: playerBox.x + playerBox.width, y: playerBox.y + playerBox.height },
+                        { x: playerBox.x + playerBox.width / 2, y: playerBox.y + playerBox.height / 2 }
+                    ];
+
+                    for (const point of playerPoints) {
+                        if (this.pointInTriangle(point, spikeTriangle[0], spikeTriangle[1], spikeTriangle[2])) {
+                            this.endGame();
+                            return;
+                        }
+                    }
+
+                    // fallback si rectangle touche vraiment fort
+                    if (this.rectVsRect(playerBox, {
+                            x: obs.x + 6,
+                            y: obs.y + 6,
+                            width: obs.width - 12,
+                            height: obs.height - 6
+                        })) {
                         this.endGame();
                         return;
                     }
@@ -383,23 +417,23 @@ export default{
                     ];
 
                     for (const point of playerPoints) {
-                    if (this.pointInTriangle(point, spikeTriangle[0], spikeTriangle[1], spikeTriangle[2])) {
+                        if (this.pointInTriangle(point, spikeTriangle[0], spikeTriangle[1], spikeTriangle[2])) {
+                            this.endGame();
+                            return;
+                        }
+                    }
+
+                    // fallback si rectangle touche vraiment fort
+                    if (this.rectVsRect(playerBox, {
+                            x: obs.x + 6,
+                            y: obs.y + 6,
+                            width: obs.width - 12,
+                            height: obs.height - 6
+                        })) {
                         this.endGame();
                         return;
                     }
                 }
-
-                // fallback si rectangle touche vraiment fort
-                if (this.rectVsRect(playerBox, {
-                        x: obs.x + 6,
-                        y: obs.y + 6,
-                        width: obs.width - 12,
-                        height: obs.height - 6
-                    })) {
-                    this.endGame();
-                    return;
-                }
-            }
             }
         },
 
@@ -721,6 +755,7 @@ export default{
 
 #canvas{
     aspect-ratio: 1.0;
+    width: 100%;
 }
 
 #app {
@@ -730,10 +765,11 @@ export default{
 .game-wrapper {
     position: relative;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 canvas {
-    width: 100%;
     height: auto;
     display: block;
     border: 3px solid #22d3ee;
@@ -772,5 +808,31 @@ canvas {
     margin-top: 10px;
     opacity: 0.9;
     font-size: 14px;
+}
+
+@media (orientation: landscape) {
+  .game-wrapper {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+  }
+
+  .game-wrapper canvas{
+    margin: 0;
+    height: 100%;
+  }
+
+  .banner {
+    display: none
+  }
+
+  h1 {
+    display: none
+  }
+
+  #routerView {
+    height: 100vh;
+  }
 }
 </style>
