@@ -1,5 +1,10 @@
 <template>
     <div>
+        <div id="layerTouch">
+            <button class="btn topleft" @click="restartGame">
+                {{ gameStarted ? (gameOver ? 'Rejouer' : 'Redémarrer') : 'Jouer' }}
+            </button>
+        </div>
         <h1>Geometry Trash</h1>
         <div class="game-wrapper">
             <div id="score">
@@ -12,10 +17,6 @@
                 <div>
                     <div>Progression : {{ progression }}%</div>
                 </div>
-
-                <button class="btn" @click="restartGame">
-                    {{ gameStarted ? (gameOver ? 'Rejouer' : 'Redémarrer') : 'Jouer' }}
-                </button>
             </div>
         </div>
     </div>
@@ -81,14 +82,14 @@ export default{
         this.drawStartScreen();
 
         window.addEventListener("keydown", this.handleKeyDown);
-        this.canvas.addEventListener("click", this.handleJumpInput);
-        this.canvas.addEventListener("touchstart", this.handleTouch, { passive: false });
+        document.getElementById("layerTouch").addEventListener("click", this.handleJumpInput);
+        document.getElementById("layerTouch").addEventListener("touchstart", this.handleTouch, { passive: false });
     },
 
     beforeUnmount() {
         window.removeEventListener("keydown", this.handleKeyDown);
-        this.canvas.removeEventListener("click", this.handleJumpInput);
-        this.canvas.removeEventListener("touchstart", this.handleTouch);
+        document.getElementById("layerTouch").removeEventListener("click", this.handleJumpInput);
+        document.getElementById("layerTouch").removeEventListener("touchstart", this.handleTouch);
 
         if (this.animationId) {
             cancelAnimationFrame(this.animationId);
@@ -815,38 +816,60 @@ canvas {
     font-size: 14px;
 }
 
+#layerTouch{
+    display: none;
+}
+
 @media (orientation: landscape) {
-  .game-wrapper {
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    height: 100%;
-  }
+    .game-wrapper {
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        height: 100%;
+    }
 
-  .game-wrapper canvas{
-    margin: 0;
-    height: 100%;
-    width: auto !important;
-  }
+    .game-wrapper canvas{
+        margin: 0;
+        height: 100%;
+        width: auto !important;
+    }
 
-  #score {
-    flex: 0 0 20%;
-  }
+    #score {
+        color: white;
+        flex: 0 0 20%;
+    }
 
-  .ui {
-    width: 20%;
-  }
+    .ui {
+        color: white;
+        width: 20%;
+    }
 
-  .banner {
-    display: none
-  }
+    .banner {
+        display: none
+    }
 
-  h1 {
-    display: none
-  }
+    h1 {
+        display: none
+    }
 
-  #routerView {
-    height: 100vh;
-  }
+    #routerView {
+        height: 100vh;
+    }
+
+    #layerTouch{
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 20;
+    }
+
+    .topleft{
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
 }
 </style>
