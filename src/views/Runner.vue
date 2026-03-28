@@ -821,6 +821,7 @@ canvas {
   .game-wrapper canvas{
     margin: 0;
     height: 100%;
+    width: auto !important;
   }
 
   .banner {
