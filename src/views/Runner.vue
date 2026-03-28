@@ -2,12 +2,15 @@
     <div>
         <h1>Geometry Trash</h1>
         <div class="game-wrapper">
+            <div id="score">
+                <div>Score : <strong>{{ score }}</strong></div>
+            </div>
+
             <canvas ref="gameCanvas" id="canvas" width="1000" height="800"></canvas>
 
             <div class="ui">
                 <div>
-                    <div>Score : <strong>{{ score }}</strong></div>
-                    <div>Progression : {{ frameCount }} / {{ frameCountMax }}</div>
+                    <div>Progression : {{ progression }}%</div>
                 </div>
 
                 <button class="btn" @click="restartGame">
@@ -30,7 +33,7 @@ export default{
 
             width: 1000,
             height: 800,
-            groundY: 420,
+            groundY: 720,
 
             gameStarted: false,
             gameOver: false,
@@ -39,6 +42,7 @@ export default{
             speed: 6,
             frameCount: 0,
             frameCountMax: 2000,
+            progression: 0,
 
             player: {
                 x: 140,
@@ -477,6 +481,7 @@ export default{
             const step = 60 * dt;
 
             this.frameCount++;
+            this.progression = ((this.frameCount / this.frameCountMax)*100).toFixed(1)
             if (this.frameCount == this.frameCountMax) this.endGame()
             this.bgOffset -= this.speed * 0.4 * step;
 
@@ -676,6 +681,9 @@ export default{
             ctx.fillStyle = "rgba(0,0,0,0.35)";
             ctx.fillRect(0, 0, this.width, this.height);
 
+            ctx.fillStyle = "blue";
+            ctx.fillRect(0, 720, 2000, 80);
+
             ctx.fillStyle = "#ffffff";
             ctx.textAlign = "center";
             ctx.font = "bold 52px Arial";
@@ -683,9 +691,6 @@ export default{
 
             ctx.font = "24px Arial";
             ctx.fillText("Clique / Touche / Espace pour commencer", this.width / 2, 230);
-
-            ctx.font = "18px Arial";
-            ctx.fillText("Évite les pics et les blocs", this.width / 2, 270);
 
             ctx.restore();
         },
@@ -822,6 +827,14 @@ canvas {
     margin: 0;
     height: 100%;
     width: auto !important;
+  }
+
+  #score {
+    flex: 0 0 20%;
+  }
+
+  .ui {
+    width: 20%;
   }
 
   .banner {
