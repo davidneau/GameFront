@@ -142,6 +142,7 @@ export default{
                     height: 35
             }];
             this.particles = [];
+            let setOff = 0;
             this.groundes = [ 
                 this.createObject(0, 720, 2000, 80, true, ""),
                 this.createObject(2100, 720, 300, 80, true, ""),
@@ -152,7 +153,12 @@ export default{
                 this.createObject(3300, 600, 100, 20, true, ""),
                 this.createObject(3550, 540, 100, 20, true, ""),
                 
-                this.createObject(3800, 720, 2000, 80, true, ""),
+                this.createObject(3800 - setOff, 720, 600, 80, true, ""),
+                this.createObject(4528 - setOff, 720, 100, 80, true, ""),
+                this.createObject(4756 - setOff, 720, 100, 80, true, ""),
+                this.createObject(4984 - setOff, 720, 100, 80, true, ""),
+                this.createObject(5212 - setOff, 720, 100, 80, true, ""),
+                this.createObject(5400 - setOff, 720, 2000, 80, true, ""),
             ];
 
             this.bgOffset = 0;
@@ -197,6 +203,7 @@ export default{
         },
 
         jump() {
+            console.log(this.frameCount)
             if (this.player.grounded) {
                 this.player.velocityY = this.player.jumpForce;
                 this.player.grounded = false;
@@ -231,92 +238,93 @@ export default{
             }
         },
         updatePlayer(dt) {
-    const step = 60 * dt;
+            const step = 60 * dt;
 
-    this.player.velocityY += this.player.gravity * step;
-    this.player.y += this.player.velocityY * step;
+            this.player.velocityY += this.player.gravity * step;
+            this.player.y += this.player.velocityY * step;
 
-    if (this.player.y >= 800) {
-        this.endGame();
-        return;
-    }
-
-    // Rotation en l'air (effet cube)
-    if (!this.player.grounded) {
-        this.player.rotation += 0.12 * step; // ~1 tour / 52 frames
-    } else {
-        // snap rotation au multiple de 90°
-        const quarterTurn = Math.PI / 2;
-        this.player.rotation = Math.round(this.player.rotation / quarterTurn) * quarterTurn;
-    }
-
-    // On considère qu'il est en l'air tant qu'on n'a pas trouvé de sol
-    this.player.grounded = false;
-
-    for (const grd of this.groundes) {
-        if (this.rectVsRect(this.player, grd)) {
-            const previousBottom = (this.player.y + this.player.height) - (this.player.velocityY * step);
-
-            // collision par le côté / par dessous sur plateformes flottantes = game over
-            if (
-                this.player.x + this.player.width >= grd.x &&
-                previousBottom > grd.y + 1 &&
-                !grd.ground
-            ) {
+            if (this.player.y >= 800) {
                 this.endGame();
                 return;
-            } else {
-                // atterrissage sur le dessus
-                this.player.y = grd.y - this.player.height;
-                this.player.velocityY = 0;
-                this.player.grounded = true;
             }
-        }
-    }
-},
+
+            // Rotation en l'air (effet cube)
+            if (!this.player.grounded) {
+                this.player.rotation += 0.12 * step; // ~1 tour / 52 frames
+            } else {
+                console.log(this.frameCount)
+                // snap rotation au multiple de 90°
+                const quarterTurn = Math.PI / 2;
+                this.player.rotation = Math.round(this.player.rotation / quarterTurn) * quarterTurn;
+            }
+
+            // On considère qu'il est en l'air tant qu'on n'a pas trouvé de sol
+            this.player.grounded = false;
+
+            for (const grd of this.groundes) {
+                if (this.rectVsRect(this.player, grd)) {
+                    const previousBottom = (this.player.y + this.player.height) - (this.player.velocityY * step);
+
+                    // collision par le côté / par dessous sur plateformes flottantes = game over
+                    if (
+                        this.player.x + this.player.width >= grd.x &&
+                        previousBottom > grd.y + 1 &&
+                        !grd.ground
+                    ) {
+                        this.endGame();
+                                return;
+                            } else {
+                                // atterrissage sur le dessus
+                                this.player.y = grd.y - this.player.height;
+                                this.player.velocityY = 0;
+                                this.player.grounded = true;
+                            }
+                        }
+                    }
+                },
 
         updateObstacles(dt) {
-    const step = 60 * dt;
+            const step = 60 * dt;
 
-    for (let i = this.obstacles.length - 1; i >= 0; i--) {
-        const obs = this.obstacles[i];
-        obs.x -= this.speed * step;
+            for (let i = this.obstacles.length - 1; i >= 0; i--) {
+                const obs = this.obstacles[i];
+                obs.x -= this.speed * step;
 
-        if (!obs.counted && obs.x + obs.width < this.player.x) {
-            obs.counted = true;
-            this.score++;
-        }
+                if (!obs.counted && obs.x + obs.width < this.player.x) {
+                    obs.counted = true;
+                    this.score++;
+                }
 
-        if (obs.x + obs.width < -50) {
-            this.obstacles.splice(i, 1);
-        }
-    }
+                if (obs.x + obs.width < -50) {
+                    this.obstacles.splice(i, 1);
+                }
+            }
 
-    for (let i = this.groundes.length - 1; i >= 0; i--) {
-        const grd = this.groundes[i];
-        grd.x -= this.speed * step;
+            for (let i = this.groundes.length - 1; i >= 0; i--) {
+                const grd = this.groundes[i];
+                grd.x -= this.speed * step;
 
-        if (grd.x + grd.width < -50) {
-            this.groundes.splice(i, 1);
-        }
-    }
-},
+                if (grd.x + grd.width < -50) {
+                    this.groundes.splice(i, 1);
+                }
+            }
+        },
 
         updateParticles(dt) {
-    const step = 60 * dt;
+            const step = 60 * dt;
 
-    for (let i = this.particles.length - 1; i >= 0; i--) {
-        const p = this.particles[i];
-        p.x += p.vx * step;
-        p.y += p.vy * step;
-        p.vy += 0.08 * step;
-        p.life -= step;
+            for (let i = this.particles.length - 1; i >= 0; i--) {
+                const p = this.particles[i];
+                p.x += p.vx * step;
+                p.y += p.vy * step;
+                p.vy += 0.08 * step;
+                p.life -= step;
 
-        if (p.life <= 0) {
-            this.particles.splice(i, 1);
-        }
-    }
-},
+                if (p.life <= 0) {
+                    this.particles.splice(i, 1);
+                }
+            }
+        },
 
         updateDifficulty() {
             // augmente progressivement la vitesse
@@ -402,43 +410,43 @@ export default{
         },
 
         endGame() {
-    if (this.gameOver) return;
+            if (this.gameOver) return;
 
-    this.gameOver = true;
+            this.gameOver = true;
 
-    if (this.animationId) {
-        cancelAnimationFrame(this.animationId);
-        this.animationId = null;
-    }
+            if (this.animationId) {
+                cancelAnimationFrame(this.animationId);
+                this.animationId = null;
+            }
 
-    this.draw();
-    this.drawGameOverOverlay();
-},
+            this.draw();
+            this.drawGameOverOverlay();
+        },
 
         update(dt) {
-    if (this.gameOver) return;
+            if (this.gameOver) return;
 
-    const step = 60 * dt;
+            const step = 60 * dt;
 
-    this.frameCount++;
-    if (this.frameCount == this.frameCountMax) this.endGame()
-    this.bgOffset -= this.speed * 0.4 * step;
+            this.frameCount++;
+            if (this.frameCount == this.frameCountMax) this.endGame()
+            this.bgOffset -= this.speed * 0.4 * step;
 
-    this.updatePlayer(dt);
-    if (this.gameOver) return;
+            this.updatePlayer(dt);
+            if (this.gameOver) return;
 
-    this.updateObstacles(dt);
-    this.updateParticles(dt);
-    this.updateDifficulty();
+            this.updateObstacles(dt);
+            this.updateParticles(dt);
+            this.updateDifficulty();
 
-    this.spawnTimer += step;
-    if (this.spawnTimer >= this.spawnInterval) {
-        // this.spawnObstacle();
-        this.spawnTimer = 0;
-    }
+            this.spawnTimer += step;
+            if (this.spawnTimer >= this.spawnInterval) {
+                // this.spawnObstacle();
+                this.spawnTimer = 0;
+            }
 
-    this.checkCollisions();
-},
+            this.checkCollisions();
+        },
 
         drawBackground() {
             const ctx = this.ctx;
@@ -642,9 +650,7 @@ export default{
             let time_tok = document.getElementById("time_tokens").children[0]
             let time = (performance.now() - this.chrono) / 60000
             if (time > 1/60){
-                console.log(time)
                 this.chrono = performance.now()
-                console.log(time_tok)
                 time_tok.innerText = (parseFloat(time_tok.innerText) - time).toFixed(2)
             }
             if (this.gameOver) return;
