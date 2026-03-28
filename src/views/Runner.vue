@@ -97,6 +97,17 @@ export default{
             this.player.rotation = 0;
         },
 
+        createObject(x, y, width, height, ground, type){
+            return {
+                type: type,
+                x: x,
+                y: y,
+                width: width,
+                height: height,
+                counted: ground
+            }
+        },
+
         startGame() {
             this.chrono = performance.now();
 
@@ -128,66 +139,21 @@ export default{
                     x: 1435,
                     y: 685,
                     width: 35,
-                    height: 35,
-                    counted: false
+                    height: 35
             }];
             this.particles = [];
-            this.groundes = [{
-                y: 720,
-                x: 0,
-                width: 2000,
-                height: 80,
-                ground: true,
-            },
-            {
-                y: 720,
-                x: 2500,
-                width: 400,
-                height: 80,
-                ground: true,
-            },
-            {
-                y: 660,
-                x: 2100,
-                width: 300,
-                height: 20,
-                ground: false,
-            },
-            {
-                y: 720,
-                x: 3400,
-                width: 17500,
-                height: 80,
-                ground: true,
-            },
-            {
-                y: 660,
-                x: 3100,
-                width: 100,
-                height: 20,
-                ground: false,
-            },
-            {
-                y: 660,
-                x: 4000,
-                width: 100,
-                height: 20,
-                ground: false,
-            },
-            {
-                y: 600,
-                x: 4300,
-                width: 100,
-                height: 20,
-                ground: false,
-            },
-            {
-                y: 540,
-                x: 4600,
-                width: 100,
-                height: 20,
-                ground: false,
-            }];
+            this.groundes = [ 
+                this.createObject(0, 720, 2000, 80, true, ""),
+                this.createObject(2100, 720, 300, 80, true, ""),
+                this.createObject(2500, 720, 100, 80, true, ""),
+                this.createObject(2700, 720, 300, 80, true, ""),
+                
+                this.createObject(3050, 660, 100, 20, true, ""),
+                this.createObject(3300, 600, 100, 20, true, ""),
+                this.createObject(3550, 540, 100, 20, true, ""),
+                
+                this.createObject(3800, 720, 2000, 80, true, ""),
+            ];
 
             this.bgOffset = 0;
 
