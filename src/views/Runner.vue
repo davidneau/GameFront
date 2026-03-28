@@ -120,29 +120,31 @@ export default{
             this.frameCount = 0;
             this.spawnTimer = 0;
             this.spawnInterval = 95;
-            this.obstacles = [{
-                    type: "spike",
-                    x: 1000,
-                    y: 685,
-                    width: 35,
-                    height: 35,
-                    counted: false
-            },{
-                    type: "spike",
-                    x: 1400,
-                    y: 685,
-                    width: 35,
-                    height: 35,
-                    counted: false
-            },{
-                    type: "spike",
-                    x: 1435,
-                    y: 685,
-                    width: 35,
-                    height: 35
-            }];
+            this.obstacles = [
+                this.createObject(1000, 685, 35, 35, false, "spike"),
+
+                this.createObject(1400, 685, 35, 35, false, "spike"),
+                this.createObject(1435, 685, 35, 35, false, "spike"),
+
+                this.createObject(4100, 685, 35, 35, false, "spike"),
+                this.createObject(4135, 685, 35, 35, false, "spike"),
+                this.createObject(4170, 685, 35, 35, false, "spike"),
+                this.createObject(4205, 685, 35, 35, false, "spike"),
+                this.createObject(4240, 685, 35, 35, false, "spike"),
+                this.createObject(4275, 685, 35, 35, false, "spike"),
+                this.createObject(4310, 685, 35, 35, false, "spike"),
+                this.createObject(4345, 685, 35, 35, false, "spike"),
+                this.createObject(4380, 685, 35, 35, false, "spike"),
+                this.createObject(4415, 685, 35, 35, false, "spike"),
+                this.createObject(4460, 685, 35, 35, false, "spike"),
+                this.createObject(4495, 685, 35, 35, false, "spike"),
+                this.createObject(4530, 685, 35, 35, false, "spike"),
+                this.createObject(4575, 685, 35, 35, false, "spike"),
+
+                this.createObject(7565, 420, 35, 35, false, "spikeDown"),
+                this.createObject(7600, 420, 35, 35, false, "spikeDown"),
+            ];
             this.particles = [];
-            let setOff = 0;
             this.groundes = [ 
                 this.createObject(0, 720, 2000, 80, true, ""),
                 this.createObject(2100, 720, 300, 80, true, ""),
@@ -153,12 +155,24 @@ export default{
                 this.createObject(3300, 600, 100, 20, true, ""),
                 this.createObject(3550, 540, 100, 20, true, ""),
                 
-                this.createObject(3800 - setOff, 720, 600, 80, true, ""),
-                this.createObject(4528 - setOff, 720, 100, 80, true, ""),
-                this.createObject(4756 - setOff, 720, 100, 80, true, ""),
-                this.createObject(4984 - setOff, 720, 100, 80, true, ""),
-                this.createObject(5212 - setOff, 720, 100, 80, true, ""),
-                this.createObject(5400 - setOff, 720, 2000, 80, true, ""),
+                this.createObject(3800, 720, 1200, 80, true, ""),
+
+                this.createObject(4200, 660, 300, 20, true, ""),
+
+                this.createObject(5128, 720, 100, 80, true, ""),
+                this.createObject(5356, 720, 100, 80, true, ""),
+                this.createObject(5584, 720, 100, 80, true, ""),
+                this.createObject(5812, 720, 100, 80, true, ""),
+                this.createObject(6000, 720, 500, 80, true, ""),
+                
+                this.createObject(6600, 660, 100, 140, true, ""),
+                this.createObject(6800, 720, 300, 80, true, ""),
+                
+                this.createObject(7200, 660, 100, 20, true, ""),
+                this.createObject(7400, 600, 100, 20, true, ""),
+                this.createObject(7550, 400, 100, 20, true, ""),
+
+                this.createObject(7600, 720, 600, 80, true, ""),
             ];
 
             this.bgOffset = 0;
@@ -437,7 +451,7 @@ export default{
 
             this.updateObstacles(dt);
             this.updateParticles(dt);
-            this.updateDifficulty();
+            //this.updateDifficulty();
 
             this.spawnTimer += step;
             if (this.spawnTimer >= this.spawnInterval) {
@@ -521,16 +535,24 @@ export default{
             const ctx = this.ctx;
 
             for (const obs of this.obstacles) {
-                if (obs.type === "block") {
+                if (obs.type === "spikeDown") {
                     ctx.save();
-                    ctx.shadowColor = "#f43f5e";
+                    ctx.shadowColor = "#facc15";
                     ctx.shadowBlur = 14;
-                    ctx.fillStyle = "#ef4444";
-                    ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+                    ctx.fillStyle = "#facc15";
+
+                    ctx.beginPath();
+                    ctx.moveTo(obs.x, obs.y);
+                    ctx.lineTo(obs.x + obs.width / 2, obs.y + obs.height);
+                    ctx.lineTo(obs.x + obs.width, obs.y);
+                    ctx.closePath();
+                    ctx.fill();
+
                     ctx.shadowBlur = 0;
-                    ctx.strokeStyle = "#fecaca";
+                    ctx.strokeStyle = "#fef08a";
                     ctx.lineWidth = 2;
-                    ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
+                    ctx.stroke();
+                    ctx.restore();
                     ctx.restore();
                 } else if (obs.type === "spike") {
                     ctx.save();
