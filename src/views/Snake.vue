@@ -1,11 +1,11 @@
 <template>
     <div>
         <div class="game-container">
-            <h1>Snake</h1>
 
             <div class="hud">
                 <p>Score : <span id="score">{{ score }}</span></p>
-                <button id="restartBtn">Recommencer</button>
+                <h1>Snake</h1>
+                <button id="restartBtn" style="margin: 5px">Recommencer</button>
             </div>
 
             <canvas id="gameCanvas" width="400" height="400"></canvas>
@@ -34,6 +34,8 @@ export default {
             food: "",
             gameInterval: "",
             gameOver: "",
+            oxTP: 0,
+            oyTP: 0
         }
     },
     methods: {
@@ -66,7 +68,6 @@ export default {
 
         // Mise à jour de l'état du jeu
         update() {
-            console.log(this.direction)
             // Nouvelle tête = tête actuelle + direction
             const head = {
                 x: this.snake[0].x + this.direction.x,
@@ -188,13 +189,18 @@ export default {
 
             for (let i = 0; i < touches.length; i++) {
                 const touch = touches[i];
-                const xC = touch.clientX;
-                const yC = touch.clientY;
-                let xtouchPad = touchpad.getBoundingClientRect().left + touchpad.clientWidth / 2
-                let ytouchPad = touchpad.getBoundingClientRect().top + touchpad.clientHeight / 2
-                let xTP = xC - (xtouchPad + window.scrollX)
-                let yTP = yC - (ytouchPad + window.scrollY)
-                
+                let nxTP = touch.clientX - touchpad.getBoundingClientRect().left + touchpad.clientWidth / 2 + window.scrollX
+                let nyTP = touch.clientY - touchpad.getBoundingClientRect().top + touchpad.clientHeight / 2 + window.scrollY
+                console.log(nyTP)
+                console.log(nxTP)
+
+                console.log(this.oyTP)
+                console.log(this.oxTP)
+                let yTP = nyTP - this.oyTP
+                let xTP = nxTP - this.oxTP
+                console.log(yTP)
+                console.log(xTP)
+
                 if ((-yTP > xTP) && (-yTP > -xTP)) {
                     console.log("en haut")
                     if (this.direction.y !== 1) this.direction = { x: 0, y: -1 };
@@ -211,7 +217,9 @@ export default {
                     if (this.direction.x !== -1) this.direction = { x: 1, y: 0 };
                     console.log("droite")
                 }
-                console.log("nd", this.direction)
+
+                this.oyTP = nyTP;
+                this.oxTP = nxTP;
             }
         }
     },
