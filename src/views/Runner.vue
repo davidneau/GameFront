@@ -45,7 +45,7 @@ export default{
             score: 0,
             speed: 6,
             frameCount: 0,
-            frameCountMax: 2000,
+            frameCountMax: 1300,
             progression: 0,
 
             player: {
@@ -182,7 +182,7 @@ export default{
                 this.createObject(7400, 600, 100, 20, true, ""),
                 this.createObject(7550, 400, 100, 20, true, ""),
 
-                this.createObject(7600, 720, 600, 80, true, ""),
+                this.createObject(7600, 720, 2000, 80, true, ""),
             ];
 
             this.bgOffset = 0;
@@ -486,7 +486,10 @@ export default{
 
             this.frameCount++;
             this.progression = ((this.frameCount / this.frameCountMax)*100).toFixed(1)
-            if (this.frameCount == this.frameCountMax) this.endGame()
+            if (this.frameCount == this.frameCountMax) {
+                this.endGame()
+                alert("Félicitations, vous avez fini ce niveau.")
+            }
             this.bgOffset -= this.speed * 0.4 * step;
 
             this.updatePlayer(dt);
