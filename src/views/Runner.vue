@@ -4,6 +4,9 @@
             <button class="btn topleft" @click="restartGame">
                 {{ gameStarted ? (gameOver ? 'Rejouer' : 'Redémarrer') : 'Jouer' }}
             </button>
+            <div id="rotateIndic">
+                Tournez votre portable pour pouvoir jouer
+            </div>
         </div>
         <h1>Geometry Trash</h1>
         <div class="game-wrapper">
@@ -816,8 +819,20 @@ canvas {
     font-size: 14px;
 }
 
-#layerTouch{
-    display: none;
+#rotateIndic{
+    background-color: darkred;
+    width: 100vw;
+    height: calc(100vh - 60px);
+    position: absolute;
+    top: 60px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
 }
 
 @media (orientation: landscape) {
@@ -828,6 +843,9 @@ canvas {
         height: 100%;
     }
 
+    #rotateIndic{
+        display: none;
+    }
     .game-wrapper canvas{
         margin: 0;
         height: 100%;
