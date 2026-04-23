@@ -189,41 +189,38 @@ export default {
             if (this.countFrame % 7 == 0){
                 let touchpad = document.getElementById('touchpad')
                 const touches = e.touches;
+                const touch = touches[0];
+                let nxTP = touch.clientX - touchpad.getBoundingClientRect().left + touchpad.clientWidth / 2 + window.scrollX
+                let nyTP = touch.clientY - touchpad.getBoundingClientRect().top + touchpad.clientHeight / 2 + window.scrollY
+                console.log(nyTP)
+                console.log(nxTP)
 
-                for (let i = 0; i < touches.length; i++) {
-                    const touch = touches[i];
-                    let nxTP = touch.clientX - touchpad.getBoundingClientRect().left + touchpad.clientWidth / 2 + window.scrollX
-                    let nyTP = touch.clientY - touchpad.getBoundingClientRect().top + touchpad.clientHeight / 2 + window.scrollY
-                    console.log(nyTP)
-                    console.log(nxTP)
+                console.log(this.oyTP)
+                console.log(this.oxTP)
+                let yTP = nyTP - this.oyTP
+                let xTP = nxTP - this.oxTP
+                console.log(yTP)
+                console.log(xTP)
 
-                    console.log(this.oyTP)
-                    console.log(this.oxTP)
-                    let yTP = nyTP - this.oyTP
-                    let xTP = nxTP - this.oxTP
-                    console.log(yTP)
-                    console.log(xTP)
-
-                    if ((-yTP > xTP) && (-yTP > -xTP)) {
-                        console.log("en haut")
-                        if (this.direction.y !== 1) this.direction = { x: 0, y: -1 };
-                    }
-                    else if ((-yTP < xTP) && (-yTP < -xTP)) {
-                        if (this.direction.y !== -1) this.direction = { x: 0, y: 1 };
-                        console.log("en bas")
-                    }
-                    else if ((-yTP > xTP) && (-yTP < -xTP)) {
-                        if (this.direction.x !== 1) this.direction = { x: -1, y: 0 };
-                        console.log("gauche")
-                    }
-                    else if ((-yTP < xTP) && (-yTP > -xTP)) {
-                        if (this.direction.x !== -1) this.direction = { x: 1, y: 0 };
-                        console.log("droite")
-                    }
-
-                    this.oyTP = nyTP;
-                    this.oxTP = nxTP;
+                if ((-yTP > xTP) && (-yTP > -xTP)) {
+                    console.log("en haut")
+                    if (this.direction.y !== 1) this.direction = { x: 0, y: -1 };
                 }
+                else if ((-yTP < xTP) && (-yTP < -xTP)) {
+                    if (this.direction.y !== -1) this.direction = { x: 0, y: 1 };
+                    console.log("en bas")
+                }
+                else if ((-yTP > xTP) && (-yTP < -xTP)) {
+                    if (this.direction.x !== 1) this.direction = { x: -1, y: 0 };
+                    console.log("gauche")
+                }
+                else if ((-yTP < xTP) && (-yTP > -xTP)) {
+                    if (this.direction.x !== -1) this.direction = { x: 1, y: 0 };
+                    console.log("droite")
+                }
+
+                this.oyTP = nyTP;
+                this.oxTP = nxTP;
             }
         }
     },
