@@ -26,6 +26,10 @@ export function initSocket() {
     socket.on("disconnect", (reason) => {
       console.warn("⚠️ Socket disconnected:", reason);
     });
+
+    socket.on("comment", (data) => {
+      console.log(data)
+    });
   }
 
   return socket;

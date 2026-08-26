@@ -12,6 +12,7 @@ import GameLeaderboard from '../views/games/GameLeaderBoard.vue'
 import Snake from '@/views/Snake.vue'
 import Runner from '@/views/Runner.vue'
 import JDR from '@/views/JDR.vue'
+import Tiktok from '@/views/Tiktok.vue'
 
 const routes = [
     { 
@@ -69,6 +70,11 @@ const routes = [
         path: '/jeux/jdr/play',
         name: 'jdrRedirect',
         component: JDR
+    },
+    {
+        path: '/tiktok/',
+        name: 'tiktokRedirect',
+        component: Tiktok
     },
     { 
         path: '/signin', 

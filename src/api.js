@@ -25,6 +25,21 @@ export function getProfile() {
     return API.get('/profile');
 }
 
+export function getTiktokComment(user_id) {
+    console.log("getTiktokComment")
+    return API.get('/getTiktokComment/' + user_id);
+}
+
+export function getTiktokLive(user_id) {
+    console.log("getTiktokLive")
+    return API.get('/getTiktokLive/' + user_id);
+}
+
+export function isLiving(user_id) {
+    console.log("getTiktokLive")
+    return API.get('/isLiving/' + user_id);
+}
+
 export function signInUser(id, mdp) {
     console.log("signIn")
     return API.post('/signIn', {"identifiant": id, "password": mdp});

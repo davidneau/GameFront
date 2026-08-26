@@ -1,5 +1,6 @@
 <template>
     <div>
+        <router-link to="/tiktok">Tiktok Watcher</router-link>
         <router-link to="/jeux/petitBac/">Petit Bac</router-link>
         <router-link to="/jeux/snake/">Snake</router-link>
         <router-link to="/jeux/runner/">Runner</router-link>
