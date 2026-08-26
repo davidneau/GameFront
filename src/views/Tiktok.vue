@@ -128,7 +128,7 @@ export default {
 
 #divPlayer{
     height: 100%;
-    width: 60%;
+    width: 80%;
 }
 
 #divPlayer video{
@@ -144,7 +144,7 @@ export default {
 
 #commentsTiktok {
     background-color: white;
-    width: 20%;
+    width: 0%;
     height: 100%;
 }
 
