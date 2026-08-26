@@ -33,25 +33,15 @@ export default {
       streamUrl: null,
       flvPlayer: null,
       userList: [
-            "jonathanwadoux7",
             "sullypapillon1",
-            "kevin.kerchaoui7",
-            "19781962.2",
             "mystiquefantastique",
             "miss.gay.caleuche",
             "coralie62100",
             "missracaille6259",
             "miss.jazz.artiste",
-            "trollagency5",
             "missjazzetmisscoco",
             "coraliedu62",
-            "valou_bmw",
             "orkanouille",
-            "tqoquento",
-            "lapetitecolline",
-            "jnr6580",
-            "bea_vjlap2",
-            "eclipsea023"
         ]
     };
   },
