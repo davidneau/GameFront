@@ -33,10 +33,11 @@ export default {
       streamUrl: null,
       flvPlayer: null,
       userList: [
+            "lemondeducabaret",
             "sullypapillon1",
             "mystiquefantastique",
             "miss.gay.caleuche",
-            "coralie62100",
+            "jonathanwadoux7",
             "missracaille6259",
             "miss.jazz.artiste",
             "missjazzetmisscoco",

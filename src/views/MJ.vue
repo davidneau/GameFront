@@ -1,7 +1,68 @@
 <template>
     <div>
-        <router-link :to="{ name: 'jdr_player' }" class="btn" > Joueurs </router-link>
-        <router-link :to="{ name: 'jdr_mj' }" class="btn" > Maître du jeu </router-link>
+        <div class="headerJDR">
+            <button @click="popupAddMonster = true">Add Monster</button>
+            <div id="divTurn">Turn : {{ nbTurn }}</div>
+        </div>
+        <div id="popupDelChar" v-show="deletePersoPopup">
+            Do you want to delete this character?
+            <div>
+                <button @click="deletePerso">Yes</button>
+                <button @click="deletePersoPopup = false">No</button>
+            </div>
+        </div>
+        <div id="popupAddMonster" v-show="popupAddMonster">
+            <button @click="popupAddMonster = false">Fermer</button>
+            <div>
+                <p>Name</p>
+                <input type="text" id="mName">
+            </div>
+            <div>
+                <p>CA</p>
+                <input type="text" id="mCA">
+            </div>
+            <div>
+                <p>PV</p>
+                <input type="text" id="mPV">
+            </div>
+            <div>
+                <p>Type</p>
+                <select id="mType">
+                    <option value="familier">Familier</option>
+                    <option value="monstre">Monstre</option>
+                </select>
+            </div>
+            <button @click="addMonster">Valider</button>
+        </div>
+        <button id="nextTurn" @click="next">Next</button>
+        <div id="divMainJDR">
+            <div class="divPerso" style="background-color:cadetblue; opacity: 1;">
+                <div><strong>Initiative</strong></div>
+                <div><strong>Nom</strong></div>
+                <div><strong>CA</strong></div>
+                <div><strong>PV</strong></div>
+            </div>
+            <div v-for="(perso, index) in persos" :key="index" :class="{ active: index === selectedIndex }">
+                <div class="divPerso" :class="perso.type">
+                    <div><input @change="changeInit" type="text" v-model=perso.init></div>
+                    <div>{{perso.name}}</div>
+                    <div class="pv">
+                        <input type="text" v-model=perso.CA>
+                        <div >
+                            <button @click="incremente(perso.name, 'CA')" style="background-color: green;">+</button>
+                            <button @click="decremente(perso.name, 'CA')" style="background-color: red;">-</button>
+                        </div>
+                    </div>
+                    <div class="pv">
+                        <input type="text" v-model=perso.PV>
+                        <div >
+                            <button @click="incremente(perso.name, 'PV')" style="background-color: green;">+</button>
+                            <button @click="decremente(perso.name, 'PV')" style="background-color: red;">-</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
